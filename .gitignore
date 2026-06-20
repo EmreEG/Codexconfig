@@ -4,3 +4,24 @@
 *.db
 .beads-credential-key
 .beads/proxieddb/
+
+# Codex runtime/config state, local to this machine
+.personality_migration
+.tmp/
+auth.json
+cache/
+config.toml
+goals_1.sqlite*
+history.jsonl
+installation_id
+logs_2.sqlite*
+memories_1.sqlite*
+models_cache.json
+plugins/
+proxy/
+sessions/
+shell_snapshots/
+skills/
+state_5.sqlite*
+tmp/
+version.json
