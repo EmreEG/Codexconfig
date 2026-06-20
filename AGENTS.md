@@ -1,22 +1,26 @@
 # Agent Workflow
 
-Use this file as the single source of truth for agent workflow instructions in this repository.
+Use this file as the global default workflow policy for Codex. Repository AGENTS.md files may add repository-specific commands and conventions.
 
 Do not create or maintain separate TODO.md, MEMORY.md, scratch planning files, or ad hoc markdown task trackers unless explicitly requested. Use Beads for durable task state.
 
 ## Work selection
 
-Start by checking Beads.
+When the current repository already contains a `.beads/` directory:
 
-- Run `bd prime` when beginning work in this repository.
+- Run `bd prime` when beginning work.
 - Use `bd ready` to select unblocked work.
 - Use `bd show <id>` before changing files.
 - Use `bd update --claim <id>` when taking a task.
 - Use `bd close <id>` only after verification evidence exists.
 - Use `bd dep add <child> <parent>` for discovered dependencies.
-- Use `bd remember` for durable project facts that should not become markdown memory files.
+- Use `bd remember` for durable project facts.
 
-Beads is configured in embedded mode here. Do not use `bd doctor` for routine health checks; use read-only embedded checks such as `bd --readonly where`, `bd --readonly context`, `bd --readonly info`, `bd --readonly ping`, `bd --readonly status`, and `bd --readonly ready`.
+If `.beads/` is absent, do not initialize Beads or create another persistent task tracker without explicit approval. For durable, multi-session, or architectural work, prefer initializing Beads after approval.
+
+Repositories may add their own repo-specific `AGENTS.md` guidance while inheriting this global workflow policy.
+
+When Beads is configured in embedded mode, do not use `bd doctor` for routine health checks; use read-only embedded checks such as `bd --readonly where`, `bd --readonly context`, `bd --readonly info`, `bd --readonly ping`, `bd --readonly status`, and `bd --readonly ready`.
 
 ## Krypton usage
 
@@ -45,7 +49,7 @@ For ordinary implementation tasks, use Beads + Semble + ast-grep + Headroom with
 
 Krypton refers to the installed Codex skills `krypton-planning` and `krypton-execution`; no standalone `krypton` CLI is required for this setup.
 
-Krypton skills may suggest `docs/goals/<goal-slug>/PLAN.md` and `GOAL.md` handoff files. In this repository, convert Krypton plans into Beads tasks by default, and keep those markdown goal files only when explicitly requested or when a true multi-session goal handoff requires them.
+Krypton skills may suggest `docs/goals/<goal-slug>/PLAN.md` and `GOAL.md` handoff files. Convert Krypton plans into Beads tasks by default when the repository uses Beads, and keep those markdown goal files only when explicitly requested or when a true multi-session goal handoff requires them.
 
 ## Tool map
 
