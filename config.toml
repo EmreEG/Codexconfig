@@ -1,0 +1,228 @@
+# ~/.codex/config.toml
+# Codex CLI 0.141.0-oriented config, as of 20 June 2026.
+#
+# Assumes these commands are available on PATH:
+# - bd / beads
+# - uvx
+# - semble via uvx
+# - headroom
+# - ast-grep / sg
+# - shellcheck
+#
+# Workflow policy belongs in AGENTS.md, not here.
+
+model = "gpt-5.5"
+model_provider = "openai"
+personality = "pragmatic"
+
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "high"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
+service_tier = "flex"
+
+# Granular approval is better than the old all-or-nothing modes for this setup.
+approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = true } }
+
+approvals_reviewer = "user"
+default_permissions = "agent-workspace"
+
+# Keep one consolidated AGENTS.md.
+# Do not use developer_instructions or duplicate workflow rules here.
+project_doc_max_bytes = 65536
+project_doc_fallback_filenames = []
+
+# Important for ast-grep/codemod safety:
+# let the agent see exact matches, rewrite previews, and diffs.
+tool_output_token_limit = 30000
+
+background_terminal_max_timeout = 300000
+
+# Keep web search available but not overly aggressive by default.
+web_search = "cached"
+
+cli_auth_credentials_store = "auto"
+mcp_oauth_credentials_store = "auto"
+
+hide_agent_reasoning = false
+show_raw_agent_reasoning = false
+check_for_update_on_startup = true
+
+
+[tools.web_search]
+context_size = "medium"
+
+
+[features]
+apps = true
+hooks = true
+multi_agent = true
+shell_snapshot = true
+shell_tool = true
+unified_exec = true
+fast_mode = true
+enable_request_compression = true
+skill_mcp_dependency_install = true
+
+# Keep off unless you deliberately want Codex memory behavior.
+# You already want Beads as the durable task/memory layer.
+memories = false
+
+# Still experimental/optional; leave off for safer repo workflows.
+undo = false
+
+
+[features.network_proxy]
+enabled = true
+allow_upstream_proxy = true
+allow_local_binding = false
+
+[features.network_proxy.domains]
+"localhost" = "allow"
+"127.0.0.1" = "allow"
+"api.openai.com" = "allow"
+"chatgpt.com" = "allow"
+"github.com" = "allow"
+"api.github.com" = "allow"
+"raw.githubusercontent.com" = "allow"
+"objects.githubusercontent.com" = "allow"
+"**.githubusercontent.com" = "allow"
+"registry.npmjs.org" = "allow"
+"pypi.org" = "allow"
+"files.pythonhosted.org" = "allow"
+
+
+[permissions.agent-workspace]
+description = "Workspace write access with secret-deny reads and limited network."
+extends = ":workspace"
+
+[permissions.agent-workspace.filesystem]
+glob_scan_max_depth = 8
+
+[permissions.agent-workspace.filesystem.":workspace_roots"]
+"." = "write"
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"**/.npmrc" = "deny"
+"**/.pypirc" = "deny"
+"**/id_rsa" = "deny"
+"**/id_rsa.pub" = "deny"
+"**/id_ed25519" = "deny"
+"**/id_ed25519.pub" = "deny"
+
+[permissions.agent-workspace.network]
+enabled = true
+mode = "limited"
+allow_upstream_proxy = true
+allow_local_binding = false
+
+[permissions.agent-workspace.network.domains]
+"localhost" = "allow"
+"127.0.0.1" = "allow"
+"api.openai.com" = "allow"
+"chatgpt.com" = "allow"
+"github.com" = "allow"
+"api.github.com" = "allow"
+"raw.githubusercontent.com" = "allow"
+"objects.githubusercontent.com" = "allow"
+"**.githubusercontent.com" = "allow"
+"registry.npmjs.org" = "allow"
+"pypi.org" = "allow"
+"files.pythonhosted.org" = "allow"
+
+
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+
+[agents.reviewer]
+description = "Review correctness, safety, test evidence, traces, UI/browser/API evidence, and source-of-truth consistency."
+nickname_candidates = ["Reviewer", "Verifier"]
+
+
+# Semble MCP: semantic code discovery.
+# Semble's Codex docs use uvx with semble[mcp].
+[mcp_servers.semble]
+enabled = true
+required = false
+command = "uvx"
+args = ["--from", "semble[mcp]", "semble", "--content", "all"]
+startup_timeout_sec = 20.0
+tool_timeout_sec = 120.0
+default_tools_approval_mode = "auto"
+enabled_tools = ["search", "find_related"]
+
+
+# Headroom MCP: explicit compression/cache/retrieval tool use.
+# For full automatic compression, run Codex through `headroom wrap codex`
+# rather than trying to encode all policy in this file.
+[mcp_servers.headroom]
+enabled = true
+required = false
+command = "headroom"
+args = ["mcp", "serve"]
+startup_timeout_sec = 20.0
+tool_timeout_sec = 120.0
+default_tools_approval_mode = "auto"
+enabled_tools = [
+  "headroom_compress",
+  "headroom_retrieve",
+  "headroom_stats"
+]
+
+
+# Installed skill wiring only. Workflow policy stays in AGENTS.md.
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/krypton-planning"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/krypton-execution"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/architecture-ownership"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/find-duplicate-ownership"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/hard-cut"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/root-cause-finder"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/git-safe-workflow"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/shellck"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/no-mistakes"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/stage-review"
+enabled = true
+
+
+[projects."/tmp/tmp.LWpNG3rUQg"]
+trust_level = "trusted"
+
+[projects."/home/emre"]
+trust_level = "trusted"
+
+[projects."/home/emre/.codex"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
