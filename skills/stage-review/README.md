@@ -1,6 +1,6 @@
 # Stage Review
 
-Stage a finished feature, run local verification, create a Conventional Commit, then send it through the `no-mistakes` gated review and fix loop.
+Use only when explicitly requested for a finished-feature, release-sensitive, gated commit/review/push workflow.
 
 ## Install
 
@@ -34,7 +34,7 @@ The target repo also needs the `no-mistakes` CLI and a `no-mistakes` remote befo
 
 ## Use When
 
-- The user says a feature is done and wants a professional pre-push review flow.
+- The user explicitly requests a professional pre-push review flow for finished or release-sensitive work.
 - You need to inspect changes, run local checks, stage explicit files, and create a Conventional Commit.
 - The real upstream push or PR should happen only after the `no-mistakes` gate passes.
 

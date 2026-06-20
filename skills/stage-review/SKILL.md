@@ -1,13 +1,13 @@
 ---
 name: stage-review
-description: Stage a finished local feature, run local verification, create a Conventional Commit, then send it through the no-mistakes gated review/fix loop before real upstream push/PR. Use when the user says a feature is done, asks for a professional stage-review flow, wants Codex to git add and commit safely, or wants no-mistakes review/verify/fix before pushing to origin.
+description: Use only when explicitly requested for a finished-feature, release-sensitive, gated commit/review/push workflow.
 ---
 
 # Stage Review
 
 ## Overview
 
-Use this as the finished-feature workflow: inspect changes, verify locally, stage explicit files, create a Conventional Commit, push through `no-mistakes`, attach to the run, fix findings, rerun, and let no-mistakes perform the real upstream push/PR only after the gate passes.
+Use this only when explicitly requested for a finished-feature, release-sensitive, gated commit/review/push workflow: inspect changes, verify locally, stage explicit files, create a Conventional Commit, push through `no-mistakes`, attach to the run, fix findings, rerun, and let no-mistakes perform the real upstream push/PR only after the gate passes.
 
 ## Core Rules
 

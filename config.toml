@@ -60,7 +60,7 @@ multi_agent = true
 shell_snapshot = true
 shell_tool = true
 unified_exec = true
-fast_mode = true
+fast_mode = false
 enable_request_compression = true
 skill_mcp_dependency_install = true
 
@@ -154,9 +154,9 @@ default_tools_approval_mode = "auto"
 enabled_tools = ["search", "find_related"]
 
 
-# Headroom MCP: explicit compression/cache/retrieval tool use.
-# For full automatic compression, run Codex through `headroom wrap codex`
-# rather than trying to encode all policy in this file.
+# Selective Headroom MCP mode is intentional.
+# Do not run `headroom wrap codex` against this managed configuration
+# without reviewing its config.toml and AGENTS.md mutations.
 [mcp_servers.headroom]
 enabled = true
 required = false
@@ -219,14 +219,8 @@ path = "/home/emre/.codex/skills/ast-grep"
 enabled = true
 
 
-[projects."/tmp/tmp.LWpNG3rUQg"]
-trust_level = "trusted"
-
 [projects."/home/emre"]
 trust_level = "trusted"
 
 [projects."/home/emre/.codex"]
 trust_level = "trusted"
-
-[tui.model_availability_nux]
-"gpt-5.5" = 4
