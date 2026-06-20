@@ -3,11 +3,14 @@
 #
 # Assumes these commands are available on PATH:
 # - bd / beads
+# - git
+# - python3
 # - uvx
 # - semble via uvx
 # - headroom
-# - ast-grep / sg
-# - shellcheck
+# - ast-grep
+# - no-mistakes
+# - gh, glab, or the relevant provider credentials when PR/CI gates are used
 #
 # Workflow policy belongs in AGENTS.md, not here.
 
@@ -200,10 +203,6 @@ enabled = true
 
 [[skills.config]]
 path = "/home/emre/.codex/skills/git-safe-workflow"
-enabled = true
-
-[[skills.config]]
-path = "/home/emre/.codex/skills/shellck"
 enabled = true
 
 [[skills.config]]
