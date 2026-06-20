@@ -16,6 +16,8 @@ Start by checking Beads.
 - Use `bd dep add <child> <parent>` for discovered dependencies.
 - Use `bd remember` for durable project facts that should not become markdown memory files.
 
+Beads is configured in embedded mode here. Do not use `bd doctor` for routine health checks; use read-only embedded checks such as `bd --readonly where`, `bd --readonly context`, `bd --readonly info`, `bd --readonly ping`, `bd --readonly status`, and `bd --readonly ready`.
+
 ## Krypton usage
 
 Use Krypton planning for:
@@ -41,7 +43,9 @@ For large work:
 
 For ordinary implementation tasks, use Beads + Semble + ast-grep + Headroom without invoking Krypton unless the task becomes architectural or risky.
 
-Krypton skills may suggest `docs/goals/<goal-slug>/PLAN.md` and `GOAL.md` handoff files. In this repository, prefer converting the plan into Beads tasks and avoid keeping separate markdown task trackers unless explicitly requested or needed for a true multi-session goal handoff.
+Krypton refers to the installed Codex skills `krypton-planning` and `krypton-execution`; no standalone `krypton` CLI is required for this setup.
+
+Krypton skills may suggest `docs/goals/<goal-slug>/PLAN.md` and `GOAL.md` handoff files. In this repository, convert Krypton plans into Beads tasks by default, and keep those markdown goal files only when explicitly requested or when a true multi-session goal handoff requires them.
 
 ## Tool map
 
