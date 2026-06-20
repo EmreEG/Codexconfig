@@ -10,8 +10,6 @@
 attachments/
 auth.json
 cache/
-!plugins/cache/
-!plugins/cache/**
 goals_1.sqlite*
 history.jsonl
 installation_id
@@ -23,6 +21,10 @@ sessions/
 shell_snapshots/
 state_5.sqlite*
 tmp/
+/plugins/cache/
+/skills/.system/
+/version.json
+/.personality_migration
 
 # Plugin install scratch space is local, but installed plugins are config.
 plugins/.remote-plugin-install-staging/

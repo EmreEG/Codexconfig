@@ -11,7 +11,7 @@ When the current repository already contains a `.beads/` directory:
 - Run `bd prime` when beginning work.
 - Use `bd ready` to select unblocked work.
 - Use `bd show <id>` before changing files.
-- Use `bd update --claim <id>` when taking a task.
+- Use `bd update <id> --claim` when taking a task.
 - Use `bd close <id>` only after verification evidence exists.
 - Use `bd dep add <child> <parent>` for discovered dependencies.
 - Use `bd remember` for durable project facts.
@@ -45,7 +45,10 @@ For large work:
 3. Use Beads dependencies to encode ordering and blocked/unblocked status.
 4. Execute from `bd ready`, not from a separate markdown checklist.
 
-For ordinary implementation tasks, use Beads + Semble + ast-grep + Headroom without invoking Krypton unless the task becomes architectural or risky.
+For ordinary implementation tasks, use Beads when the repository already has
+a `.beads/` directory; otherwise use Semble + ast-grep + Headroom without
+creating persistent task state. Do not invoke Krypton unless the task becomes
+architectural or risky.
 
 Krypton refers to the installed Codex skills `krypton-planning` and `krypton-execution`; no standalone `krypton` CLI is required for this setup.
 
@@ -62,6 +65,11 @@ Planning and architecture:
 - hard-cut
 - root-cause-finder
 
+Use hard-cut only for pre-release or internal-draft changes. Do not invoke it
+when an existing public contract, persisted user data, database state, file
+format, or cross-service wire format may require compatibility unless dropping
+that compatibility has been explicitly approved.
+
 Code discovery and edits:
 
 - Semble
@@ -70,7 +78,6 @@ Code discovery and edits:
 Safety and verification:
 
 - git-safe-workflow
-- shellck or shellcheck for shell scripts
 - no-mistakes and stage-review only for heavier gated push flows, release-sensitive changes, or when explicitly requested
 
 Context and output control:
@@ -111,8 +118,6 @@ Before marking work complete, collect evidence from the relevant source:
 - direct file inspection
 
 State the evidence used. For ordinary non-Krypton Beads work, use the same standard: tests, lint, type checks, diffs, or file inspection are supporting evidence only when they directly cover the requirement being claimed.
-
-For shell scripts, use shellck or shellcheck before completion.
 
 Use no-mistakes and stage-review only for heavier gated push flows, release-sensitive changes, or when explicitly requested.
 

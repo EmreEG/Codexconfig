@@ -1,6 +1,6 @@
 ---
 name: ast-grep
-description: Use ast-grep (`sg` or `ast-grep`) for syntax-aware code search, structural matches, and codemods. Use when exact text search is too brittle, when changing language syntax across files, or when previewing and applying small reviewable rewrites.
+description: Use ast-grep for syntax-aware code search, structural matches, and codemods. Use when exact text search is too brittle, when changing language syntax across files, or when previewing and applying small reviewable rewrites.
 ---
 
 # ast-grep
@@ -18,15 +18,14 @@ Use ast-grep for structural code discovery and codemods. Prefer `rg` for exact s
 
 ## Commands
 
-Use the installed binary that exists in the environment:
+Use the full `ast-grep` binary name:
 
 ```bash
-sg --pattern '<pattern>' --lang <language> <path>
 ast-grep --pattern '<pattern>' --lang <language> <path>
 ```
 
 For rewrites, preview first and then apply only after inspecting the candidate matches:
 
 ```bash
-sg --pattern '<old>' --rewrite '<new>' --lang <language> <path>
+ast-grep --pattern '<old>' --rewrite '<new>' --lang <language> <path>
 ```
