@@ -1,6 +1,6 @@
 ---
 name: krypton-planning
-description: Use when a user has a feature request, bugfix, refactor, migration, architecture change, or product goal and needs an implementation plan before coding. Use especially when wrong ownership, duplicate paths, stale contracts, weak evidence, or unclear cutover would make plausible agent work dangerous.
+description: Use for architectural changes, migrations, production-risky work, multi-session features, source-of-truth decisions, cutover decisions, large refactors, cross-cutting ownership changes, or goal-based work that needs an implementation plan before coding. Do not use for ordinary small bugfixes or one-shot implementation tasks unless wrong ownership, duplicate paths, stale contracts, weak evidence, or unclear cutover would make plausible agent work dangerous.
 ---
 
 # Krypton Planning
@@ -63,7 +63,17 @@ Acceptance evidence gate:
 
 For broad or unclear repositories, dispatch a read-only explorer if the harness supports agents. Ask one bounded question, such as "map the source of truth, read/write path, unsafe files, and evidence gate." The execution session should use this map instead of rediscovering the same slice.
 
-3. Save a goal package unless the user gives another location:
+3. Persist the approved plan in Beads by default:
+
+```text
+bd create --type=epic --title="[Outcome Title]" --description="[Intent, expected outcome, truth owner, contract boundary, cutover, acceptance evidence, kill criteria]"
+bd create --parent=<epic-id> --type=task --title="[Task title]" --description="[Allowed files, output, verification command, acceptance evidence]"
+bd dep add <child> <parent>
+```
+
+Create one epic for the outcome, one task for each execution slice, and dependencies that encode blocked/unblocked order. Execution should proceed from `bd ready`, not from a private checklist.
+
+4. Only save a markdown goal package when explicitly requested or when a true multi-session handoff requires a durable human-readable plan:
 
 ```text
 docs/goals/<goal-slug>/PLAN.md
@@ -72,7 +82,7 @@ docs/goals/<goal-slug>/GOAL.md
 
 `PLAN.md` contains the full plan. `GOAL.md` is a short execution prompt that points to the plan instead of copying it.
 
-4. Start `PLAN.md` with this header shape:
+5. When a markdown `PLAN.md` is justified, start it with this header shape:
 
 ```markdown
 # [Outcome Title] Implementation Plan
@@ -93,9 +103,9 @@ docs/goals/<goal-slug>/GOAL.md
 **Plan Review Gate:** Requires PRE review before execution.
 ```
 
-5. Break work into small tasks. Each task names exact files, allowed scope, expected output, verification command, acceptance evidence, and whether it can run in parallel.
+6. Break work into small tasks. Each task names exact files, allowed scope, expected output, verification command, acceptance evidence, and whether it can run in parallel.
 
-6. Run a PRE plan review when possible. Use `plan-reviewer-prompt.md` as the individual prompt template. Do not execute until blocker findings are fixed or explicitly accepted by the user.
+7. Run a PRE plan review when possible. Use `plan-reviewer-prompt.md` as the individual prompt template. Do not execute until blocker findings are fixed or explicitly accepted by the user.
 
 ## GOAL.md Shape
 

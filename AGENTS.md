@@ -78,7 +78,7 @@ Context and output control:
 Use Semble first for semantic code discovery.
 
 - Use Semble to locate relevant code, related files, owners, examples, and call paths.
-- Use direct file reads before edits.
+- Read the complete relevant files directly before editing them; search snippets and compressed summaries are not enough to justify a change.
 - Do not edit from search snippets alone.
 - Use grep only for exact strings.
 - Use ast-grep for syntax-aware searches, structural matches, and codemods.
@@ -106,7 +106,7 @@ Before marking work complete, collect evidence from the relevant source:
 - lint/static analysis
 - direct file inspection
 
-State the evidence used.
+State the evidence used. For ordinary non-Krypton Beads work, use the same standard: tests, lint, type checks, diffs, or file inspection are supporting evidence only when they directly cover the requirement being claimed.
 
 For shell scripts, use shellck or shellcheck before completion.
 
