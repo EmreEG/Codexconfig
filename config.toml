@@ -214,6 +214,10 @@ enabled = true
 path = "/home/emre/.codex/skills/stage-review"
 enabled = true
 
+[[skills.config]]
+path = "/home/emre/.codex/skills/ast-grep"
+enabled = true
+
 
 [projects."/tmp/tmp.LWpNG3rUQg"]
 trust_level = "trusted"

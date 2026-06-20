@@ -1,0 +1,4 @@
+interface:
+  display_name: "ast-grep"
+  short_description: "Syntax-aware search and codemods"
+  default_prompt: "Use $ast-grep to inspect structural matches and make a small, reviewable codemod."
