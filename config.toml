@@ -18,17 +18,19 @@ model = "gpt-5.5"
 model_provider = "openai"
 personality = "pragmatic"
 
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
 service_tier = "flex"
 
-# Granular approval is better than the old all-or-nothing modes for this setup.
-approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = true } }
+# Run generated commands without Codex filesystem sandboxing.
+sandbox_mode = "danger-full-access"
+
+# Keep granular approvals for non-sandbox gates.
+approval_policy = { granular = { sandbox_approval = false, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = true } }
 
 approvals_reviewer = "user"
-default_permissions = "agent-workspace"
 
 # Keep one consolidated AGENTS.md.
 # Do not use developer_instructions or duplicate workflow rules here.
@@ -75,65 +77,6 @@ memories = false
 undo = false
 
 
-[features.network_proxy]
-enabled = true
-allow_upstream_proxy = true
-allow_local_binding = false
-
-[features.network_proxy.domains]
-"localhost" = "allow"
-"127.0.0.1" = "allow"
-"api.openai.com" = "allow"
-"chatgpt.com" = "allow"
-"github.com" = "allow"
-"api.github.com" = "allow"
-"raw.githubusercontent.com" = "allow"
-"objects.githubusercontent.com" = "allow"
-"**.githubusercontent.com" = "allow"
-"registry.npmjs.org" = "allow"
-"pypi.org" = "allow"
-"files.pythonhosted.org" = "allow"
-
-
-[permissions.agent-workspace]
-description = "Workspace write access with secret-deny reads and limited network."
-extends = ":workspace"
-
-[permissions.agent-workspace.filesystem]
-glob_scan_max_depth = 8
-
-[permissions.agent-workspace.filesystem.":workspace_roots"]
-"." = "write"
-"**/.env" = "deny"
-"**/.env.*" = "deny"
-"**/.npmrc" = "deny"
-"**/.pypirc" = "deny"
-"**/id_rsa" = "deny"
-"**/id_rsa.pub" = "deny"
-"**/id_ed25519" = "deny"
-"**/id_ed25519.pub" = "deny"
-
-[permissions.agent-workspace.network]
-enabled = true
-mode = "limited"
-allow_upstream_proxy = true
-allow_local_binding = false
-
-[permissions.agent-workspace.network.domains]
-"localhost" = "allow"
-"127.0.0.1" = "allow"
-"api.openai.com" = "allow"
-"chatgpt.com" = "allow"
-"github.com" = "allow"
-"api.github.com" = "allow"
-"raw.githubusercontent.com" = "allow"
-"objects.githubusercontent.com" = "allow"
-"**.githubusercontent.com" = "allow"
-"registry.npmjs.org" = "allow"
-"pypi.org" = "allow"
-"files.pythonhosted.org" = "allow"
-
-
 [agents]
 max_threads = 4
 max_depth = 1
@@ -155,6 +98,9 @@ startup_timeout_sec = 20.0
 tool_timeout_sec = 120.0
 default_tools_approval_mode = "auto"
 enabled_tools = ["search", "find_related"]
+
+[mcp_servers.semble.tools.search]
+approval_mode = "approve"
 
 
 # Selective Headroom MCP mode is intentional.
@@ -223,3 +169,9 @@ trust_level = "trusted"
 
 [projects."/home/emre/.codex"]
 trust_level = "trusted"
+
+[projects."/home/emre/logiflowplus"]
+trust_level = "trusted"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
