@@ -98,8 +98,9 @@ Trusted project roots:
 
 ### Search Profiles
 
-The base configuration keeps web search cached. Live Loop Library catalog
-lookup uses a narrow profile overlay instead of changing the global default:
+The base configuration keeps web search cached. Use the Loop Library profile
+for `Find`, full `Discover`, or any Loop Library work requiring the current
+published catalog:
 
 ```bash
 codex --profile loop-library
@@ -110,6 +111,9 @@ That profile is defined in `loop-library.config.toml` and sets:
 ```toml
 web_search = "live"
 ```
+
+The base cached-search configuration is sufficient for pure local `Audit` or
+`Design` work that does not need current catalog lookup.
 
 ## MCP Servers
 

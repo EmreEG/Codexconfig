@@ -86,17 +86,19 @@ Context and output control:
 
 Loop design and reuse:
 
-- loop-library, only when explicitly invoked as `$loop-library`
+- loop-library, only when explicitly invoked through `$loop-library` or selected
+  from `/skills`
 
 ## Loop Library usage
 
-Use `$loop-library` to discover, select, adapt, audit, or design a bounded
-agent loop. It is advisory and does not authorize executing the loop,
-scheduling it, or performing destructive, production, external-message, commit,
-push, merge, or release actions. It also does not replace the existing
-execution owners:
+Use `$loop-library` or explicit `/skills` selection to discover, select, adapt,
+audit, or design a bounded agent loop. It is advisory and does not authorize
+executing the loop, scheduling it, or performing destructive, production,
+external-message, commit, push, merge, or release actions. It also does not
+replace the existing execution owners:
 
-1. `$loop-library` discovers, selects, adapts, audits, or designs a bounded loop.
+1. `$loop-library` or `/skills` selection discovers, selects, adapts, audits, or
+   designs a bounded loop.
 2. Architectural, risky, cross-cutting, or multi-session execution goes through Krypton Planning → Beads → Krypton Execution.
 3. Ordinary implementation uses Beads → Semble/direct reads → ast-grep where appropriate → verification.
 4. Debugging remains owned by `root-cause-finder`.
