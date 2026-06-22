@@ -1,0 +1,5 @@
+# Profile overlay for Loop Library catalog lookup sessions.
+# Keep the base config on cached search; use this profile only when live
+# published-loop discovery is required.
+
+web_search = "live"

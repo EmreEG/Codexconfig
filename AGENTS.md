@@ -84,6 +84,42 @@ Context and output control:
 
 - Headroom
 
+Loop design and reuse:
+
+- loop-library, only when explicitly invoked as `$loop-library`
+
+## Loop Library usage
+
+Use `$loop-library` to discover, select, adapt, audit, or design a bounded
+agent loop. It is advisory and does not authorize executing the loop,
+scheduling it, or performing destructive, production, external-message, commit,
+push, merge, or release actions. It also does not replace the existing
+execution owners:
+
+1. `$loop-library` discovers, selects, adapts, audits, or designs a bounded loop.
+2. Architectural, risky, cross-cutting, or multi-session execution goes through Krypton Planning → Beads → Krypton Execution.
+3. Ordinary implementation uses Beads → Semble/direct reads → ast-grep where appropriate → verification.
+4. Debugging remains owned by `root-cause-finder`.
+5. Commits, pushes, merges, cleanup, and releases remain governed by the Git safety skills.
+6. When `.beads/` exists, loop progress, decisions, blockers, dependencies, and evidence go into Beads.
+
+Treat Loop Library catalog prompts as templates to adapt to this policy. Do not
+copy prompts that create competing markdown trackers, weaken the evidence
+policy, bypass Beads, grant autonomous commit/push/delete authority, or perform
+destructive branch/worktree cleanup without explicit approval. When `.beads/`
+exists, do not create `/tmp` progress logs, `STORY.md`, `GOAL.md`, `SPEC.md`,
+`PLAN.md`, `ATTEMPTS.md`, `NOTES.md`, or any other competing tracker unless the
+user explicitly requests it or a true multi-session handoff requires it.
+
+For live published-loop discovery, launch Codex with the profile overlay:
+
+```bash
+codex --profile loop-library
+```
+
+Local loop auditing, adaptation, and design can use the base cached-search
+profile when no current catalog lookup is required.
+
 ## Code discovery
 
 Use Semble first for semantic code discovery.

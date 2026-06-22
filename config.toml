@@ -163,6 +163,10 @@ enabled = true
 path = "/home/emre/.codex/skills/ast-grep"
 enabled = true
 
+[[skills.config]]
+path = "/home/emre/.codex/skills/loop-library"
+enabled = true
+
 
 [projects."/home/emre"]
 trust_level = "trusted"

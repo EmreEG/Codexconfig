@@ -17,6 +17,7 @@ The workstation this setup targets is:
 | Path | Purpose |
 | --- | --- |
 | `config.toml` | Codex runtime configuration: model, approval behavior, features, MCP servers, enabled skills, and trusted projects. |
+| `loop-library.config.toml` | Optional Codex profile overlay that enables live web search for current Loop Library catalog lookup. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
 | `.beads/` | Beads task database, embedded Dolt backend, and Beads-managed git hooks. |
 | `.beads/config.yaml` | Beads repository configuration and documentation for optional settings. |
@@ -40,6 +41,7 @@ defaults are:
 - Verbosity: `medium`
 - Service tier: `flex`
 - Web search: `cached`
+- Optional Loop Library profile: `web_search = "live"` via `codex --profile loop-library`
 - Tool output token limit: `30000`
 - Background terminal max timeout: `300000` ms
 - Project instruction max size: `65536` bytes
@@ -93,6 +95,21 @@ Trusted project roots:
 - `/home/emre`
 - `/home/emre/.codex`
 - `/home/emre/logiflowplus`
+
+### Search Profiles
+
+The base configuration keeps web search cached. Live Loop Library catalog
+lookup uses a narrow profile overlay instead of changing the global default:
+
+```bash
+codex --profile loop-library
+```
+
+That profile is defined in `loop-library.config.toml` and sets:
+
+```toml
+web_search = "live"
+```
 
 ## MCP Servers
 
@@ -220,6 +237,7 @@ Enabled local skills:
 | `no-mistakes` | Run the heavier gated push workflow for finished feature branches. |
 | `stage-review` | Explicit-only finished-feature staging, commit, review, and no-mistakes gate workflow. |
 | `ast-grep` | Syntax-aware search, structural matching, and small reviewable codemods. |
+| `loop-library` | Explicit-only advisory skill for discovering, finding, auditing, adapting, and designing bounded agent loops. |
 
 System skills under `skills/.system/`:
 
@@ -265,6 +283,7 @@ Interface-only OpenAI skill entries:
 - `skills/ast-grep/agents/openai.yaml`
 - `skills/no-mistakes/agents/openai.yaml`
 - `skills/stage-review/agents/openai.yaml`
+- `skills/loop-library/agents/openai.yaml`
 
 Dedicated duplicate-ownership subagents:
 
@@ -437,6 +456,48 @@ this workspace policy says to convert plans into Beads tasks by default. Keep
 markdown goal files only when explicitly requested or when a true multi-session
 handoff needs them.
 
+## Loop Library
+
+Repository: <https://github.com/Forward-Future/loop-library>
+
+Only the `skills/loop-library/` companion skill is vendored here. The Loop
+Library website, catalog worker, and publishing stack are not installed and are
+not required at runtime. The skill contains instructions and references; it
+does not add an MCP server, hook, subagent, scheduler, or executable payload.
+
+The local copy starts in explicit-only mode:
+
+```text
+$loop-library
+```
+
+This avoids accidental overlap with Krypton planning and normal implementation
+routing. Selecting or designing a loop remains advisory. Existing Beads,
+Krypton, discovery, verification, approval, and git-safety rules govern any
+subsequent execution.
+
+The base config intentionally keeps `web_search = "cached"`. Published-loop
+lookup requires the current catalog, so start that session with the tracked
+profile:
+
+```bash
+codex --profile loop-library
+```
+
+Then invoke `$loop-library` and use its Find path. Local codebase discovery,
+loop auditing, and new-loop design do not require the live-search profile unless
+they also need current catalog results.
+
+Catalog prompts are templates, not installed capabilities or authorization.
+Replace named tools, schedules, progress files, and handoff formats with the
+actual tools and policy in `AGENTS.md`. In particular, use Beads for durable
+state when available and do not introduce competing markdown or `/tmp` trackers.
+
+The vendored runtime does not require Node.js or `npx`. Upstream documents an
+`npx` installer, but this repository keeps reviewed skill files under version
+control instead. Because upstream currently has no releases, review and diff
+upstream changes before updating the vendored copy.
+
 ## Instructa Skills
 
 The local skill set includes the recommended Instructa-style skills from:
@@ -454,7 +515,8 @@ instructa/agent-skills --skill git-safe-workflow --agent codex
 ```
 
 This workspace also has `ast-grep`, `no-mistakes`, `stage-review`,
-`krypton-planning`, and `krypton-execution` skills installed locally.
+`loop-library`, `krypton-planning`, and `krypton-execution` skills installed
+locally.
 
 ## Recommended Workflow
 
