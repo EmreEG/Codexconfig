@@ -1,5 +1,5 @@
 # ~/.codex/config.toml
-# Codex CLI 0.141.0-oriented config, as of 20 June 2026.
+# Codex CLI 0.143.0-alpha.6-oriented config, as of 23 June 2026.
 #
 # Assumes these commands are available on PATH:
 # - bd / beads
@@ -22,7 +22,7 @@ model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
-service_tier = "flex"
+service_tier = "fast"
 
 # Run generated commands without Codex filesystem sandboxing.
 sandbox_mode = "danger-full-access"
@@ -65,7 +65,7 @@ multi_agent = true
 shell_snapshot = true
 shell_tool = true
 unified_exec = true
-fast_mode = false
+fast_mode = true
 enable_request_compression = true
 skill_mcp_dependency_install = true
 
@@ -88,12 +88,13 @@ nickname_candidates = ["Reviewer", "Verifier"]
 
 
 # Semble MCP: semantic code discovery.
-# Semble's Codex docs use uvx with semble[mcp].
+# Keep the default code-only index. Codex sessions may start in /home/emre;
+# full text/config/doc indexing of the home tree has caused kernel OOM kills.
 [mcp_servers.semble]
 enabled = true
 required = false
 command = "uvx"
-args = ["--from", "semble[mcp]", "semble", "--content", "all"]
+args = ["--from", "semble[mcp]", "semble"]
 startup_timeout_sec = 20.0
 tool_timeout_sec = 120.0
 default_tools_approval_mode = "auto"

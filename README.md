@@ -17,6 +17,8 @@ The workstation this setup targets is:
 | Path | Purpose |
 | --- | --- |
 | `config.toml` | Codex runtime configuration: model, approval behavior, features, MCP servers, enabled skills, and trusted projects. |
+| `medium.config.toml` | Optional Codex profile overlay for `gpt-5.5` medium reasoning with the same Fast service tier. |
+| `extra-high.config.toml` | Optional Codex profile overlay for `gpt-5.5` extra-high reasoning with the same Fast service tier. |
 | `loop-library.config.toml` | Optional Codex profile overlay that enables live web search for current Loop Library catalog lookup. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
 | `.beads/` | Beads task database, embedded Dolt backend, and Beads-managed git hooks. |
@@ -39,7 +41,7 @@ defaults are:
 - Reasoning effort: `high`
 - Reasoning summaries: `auto`
 - Verbosity: `medium`
-- Service tier: `flex`
+- Service tier: `fast`
 - Web search: `cached`
 - Optional Loop Library profile: `web_search = "live"` via `codex --profile loop-library`
 - Tool output token limit: `30000`
@@ -78,12 +80,12 @@ Enabled Codex features:
 - `shell_snapshot = true`
 - `shell_tool = true`
 - `unified_exec = true`
+- `fast_mode = true`
 - `enable_request_compression = true`
 - `skill_mcp_dependency_install = true`
 
 Disabled Codex features:
 
-- `fast_mode = false`
 - `memories = false`
 - `undo = false`
 
@@ -128,7 +130,7 @@ Repository: <https://github.com/MinishLab/semble/tree/main>
 Configured command:
 
 ```bash
-uvx --from 'semble[mcp]' semble --content all
+uvx --from 'semble[mcp]' semble
 ```
 
 Config details:
