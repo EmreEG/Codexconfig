@@ -1,6 +1,6 @@
 ---
 name: ast-grep
-description: Use ast-grep for syntax-aware code search, structural matches, and codemods. Use when exact text search is too brittle, when changing language syntax across files, or when previewing and applying small reviewable rewrites.
+description: "Syntax-aware structural search and codemods when exact text search is insufficient."
 ---
 
 # ast-grep

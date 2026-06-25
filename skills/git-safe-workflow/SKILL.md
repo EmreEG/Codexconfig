@@ -1,6 +1,6 @@
 ---
 name: git-safe-workflow
-description: Safely inspect, stage, commit, and (only if asked) push changes made by an AI agent. Use for commit/push requests, end-of-task checkpoints, merge conflict resolution, worktree safety checks, or deciding whether to use git commit --amend.
+description: "Guard Git staging, commits, pushes, conflicts, and worktree safety."
 ---
 
 # Git Safe Workflow

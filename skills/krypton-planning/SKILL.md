@@ -1,6 +1,6 @@
 ---
 name: krypton-planning
-description: Use for architectural changes, migrations, production-risky work, multi-session features, source-of-truth decisions, cutover decisions, large refactors, cross-cutting ownership changes, or goal-based work that needs an implementation plan before coding. Do not use for ordinary small bugfixes or one-shot implementation tasks unless wrong ownership, duplicate paths, stale contracts, weak evidence, or unclear cutover would make plausible agent work dangerous.
+description: "Plan architecture, migrations, risky cutovers, large refactors, or multi-session work."
 ---
 
 # Krypton Planning

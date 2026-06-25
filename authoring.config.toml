@@ -1,0 +1,17 @@
+[features]
+apps = true
+plugins = true
+workspace_dependencies = true
+skill_mcp_dependency_install = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/.system/plugin-creator/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/.system/skill-creator/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/.system/skill-installer/SKILL.md"
+enabled = true

@@ -1,6 +1,6 @@
 name = "ownership_taxonomy_mapper"
 description = "Read-only mapper for duplicate-ownership audits. Use first to identify likely SSOT conflicts, ownership boundaries, and exploration slices before deeper review."
-model = "gpt-5.4-mini"
+model = "gpt-5.5"
 model_reasoning_effort = "medium"
 nickname_candidates = ["Mapper", "Topo", "Surveyor"]
 developer_instructions = """

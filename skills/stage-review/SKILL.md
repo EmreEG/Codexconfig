@@ -1,6 +1,6 @@
 ---
 name: stage-review
-description: Use only when explicitly requested for a finished-feature, release-sensitive, gated commit/review/push workflow.
+description: "Run the finished-feature gated stage, commit, review, and push workflow when explicitly requested."
 ---
 
 # Stage Review

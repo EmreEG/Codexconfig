@@ -4,5 +4,5 @@ web_search = "live"
 context_size = "high"
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/loop-library/SKILL.md"
+path = "/home/emre/.codex/skills/.system/openai-docs/SKILL.md"
 enabled = true

@@ -1,0 +1,8 @@
+[mcp_servers.semble]
+enabled = true
+required = false
+command = "semble"
+startup_timeout_sec = 5
+tool_timeout_sec = 30
+default_tools_approval_mode = "approve"
+enabled_tools = ["search", "find_related"]

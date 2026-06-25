@@ -1,6 +1,6 @@
 ---
 name: root-cause-finder
-description: Performs root-cause-first debugging and review by tracing expected behavior to the first unintended side effect before changing contracts, parsing, or types. Use when debugging protocol errors, deserialization failures, null payloads, missing fields, restore or hydration issues, state-ownership bugs, unexpected requests, background mutations, or reviewing junior-created code where the visible failure may be downstream noise.
+description: "Trace the first unintended side effect before fixing downstream symptoms."
 ---
 
 # Root-Cause Finder

@@ -1,176 +1,136 @@
-# ~/.codex/config.toml
-# Codex CLI 0.143.0-alpha.6-oriented config, as of 23 June 2026.
-#
-# Assumes these commands are available on PATH:
-# - bd / beads
-# - git
-# - python3
-# - uvx
-# - semble via uvx
-# - headroom
-# - ast-grep
-# - no-mistakes
-# - gh, glab, or the relevant provider credentials when PR/CI gates are used
-#
-# Workflow policy belongs in AGENTS.md, not here.
+#:schema https://developers.openai.com/codex/config-schema.json
 
 model = "gpt-5.5"
 model_provider = "openai"
-personality = "pragmatic"
+personality = "none"
 
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
-model_reasoning_summary = "auto"
-model_verbosity = "medium"
+model_reasoning_summary = "none"
+model_verbosity = "low"
 service_tier = "fast"
 
-# Run generated commands without Codex filesystem sandboxing.
+allow_login_shell = false
+check_for_update_on_startup = false
+
 sandbox_mode = "danger-full-access"
-
-# Keep granular approvals for non-sandbox gates.
-approval_policy = { granular = { sandbox_approval = false, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = true } }
-
+approval_policy = { granular = { sandbox_approval = false, rules = true, mcp_elicitations = false, request_permissions = true, skill_approval = true } }
 approvals_reviewer = "user"
 
-# Keep one consolidated AGENTS.md.
-# Do not use developer_instructions or duplicate workflow rules here.
-project_doc_max_bytes = 65536
+project_doc_max_bytes = 32768
 project_doc_fallback_filenames = []
+tool_output_token_limit = 10000
+web_search = "disabled"
 
-# Important for ast-grep/codemod safety:
-# let the agent see exact matches, rewrite previews, and diffs.
-tool_output_token_limit = 30000
+[analytics]
+enabled = false
 
-background_terminal_max_timeout = 300000
+[feedback]
+enabled = false
 
-# Keep web search available but not overly aggressive by default.
-web_search = "cached"
+[history]
+max_bytes = 33554432
 
-cli_auth_credentials_store = "auto"
-mcp_oauth_credentials_store = "auto"
-
-hide_agent_reasoning = false
-show_raw_agent_reasoning = false
-check_for_update_on_startup = true
-
-
-[tools.web_search]
-context_size = "medium"
-
+[tools]
+view_image = false
 
 [features]
-apps = true
-hooks = true
-multi_agent = true
+apps = false
+plugins = false
+plugin_sharing = false
+workspace_dependencies = false
+tool_suggest = false
+browser_use = false
+browser_use_external = false
+browser_use_full_cdp_access = false
+computer_use = false
+in_app_browser = false
+image_generation = false
+hooks = false
+goals = false
+skill_mcp_dependency_install = false
+memories = false
+personality = false
+multi_agent = false
+guardian_approval = false
+tool_call_mcp_elicitation = false
 shell_snapshot = true
 shell_tool = true
 unified_exec = true
 fast_mode = true
 enable_request_compression = true
-skill_mcp_dependency_install = true
-
-# Keep off unless you deliberately want Codex memory behavior.
-# You already want Beads as the durable task/memory layer.
-memories = false
-
-# Still experimental/optional; leave off for safer repo workflows.
-undo = false
-
 
 [agents]
-max_threads = 4
+max_threads = 6
 max_depth = 1
-job_max_runtime_seconds = 1800
 
-[agents.reviewer]
-description = "Review correctness, safety, test evidence, traces, UI/browser/API evidence, and source-of-truth consistency."
-nickname_candidates = ["Reviewer", "Verifier"]
-
-
-# Semble MCP: semantic code discovery.
-# Keep the default code-only index. Codex sessions may start in /home/emre;
-# full text/config/doc indexing of the home tree has caused kernel OOM kills.
-[mcp_servers.semble]
-enabled = true
-required = false
-command = "uvx"
-args = ["--from", "semble[mcp]", "semble"]
-startup_timeout_sec = 20.0
-tool_timeout_sec = 120.0
-default_tools_approval_mode = "auto"
-enabled_tools = ["search", "find_related"]
-
-[mcp_servers.semble.tools.search]
-approval_mode = "approve"
-
-
-# Selective Headroom MCP mode is intentional.
-# Do not run `headroom wrap codex` against this managed configuration
-# without reviewing its config.toml and AGENTS.md mutations.
-[mcp_servers.headroom]
-enabled = true
-required = false
-command = "headroom"
-args = ["mcp", "serve"]
-startup_timeout_sec = 20.0
-tool_timeout_sec = 120.0
-default_tools_approval_mode = "auto"
-enabled_tools = [
-  "headroom_compress",
-  "headroom_retrieve",
-  "headroom_stats"
-]
-
-
-# Installed skill wiring only. Workflow policy stays in AGENTS.md.
+[tui]
+animations = false
+show_tooltips = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/krypton-planning"
-enabled = true
+path = "/home/emre/.codex/skills/.system/imagegen/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/krypton-execution"
-enabled = true
+path = "/home/emre/.codex/skills/.system/openai-docs/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/architecture-ownership"
-enabled = true
+path = "/home/emre/.codex/skills/.system/plugin-creator/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/find-duplicate-ownership"
-enabled = true
+path = "/home/emre/.codex/skills/.system/skill-creator/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/hard-cut"
-enabled = true
+path = "/home/emre/.codex/skills/.system/skill-installer/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/root-cause-finder"
-enabled = true
+path = "/home/emre/.codex/skills/krypton-planning/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/git-safe-workflow"
-enabled = true
+path = "/home/emre/.codex/skills/krypton-execution/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/no-mistakes"
-enabled = true
+path = "/home/emre/.codex/skills/architecture-ownership/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/stage-review"
-enabled = true
+path = "/home/emre/.codex/skills/find-duplicate-ownership/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/ast-grep"
-enabled = true
+path = "/home/emre/.codex/skills/hard-cut/SKILL.md"
+enabled = false
 
 [[skills.config]]
-path = "/home/emre/.codex/skills/loop-library"
-enabled = true
+path = "/home/emre/.codex/skills/root-cause-finder/SKILL.md"
+enabled = false
 
+[[skills.config]]
+path = "/home/emre/.codex/skills/git-safe-workflow/SKILL.md"
+enabled = false
 
-[projects."/home/emre"]
-trust_level = "trusted"
+[[skills.config]]
+path = "/home/emre/.codex/skills/no-mistakes/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/stage-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/ast-grep/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/loop-library/SKILL.md"
+enabled = false
 
 [projects."/home/emre/.codex"]
 trust_level = "trusted"
@@ -178,5 +138,5 @@ trust_level = "trusted"
 [projects."/home/emre/logiflowplus"]
 trust_level = "trusted"
 
-[tui.model_availability_nux]
-"gpt-5.5" = 4
+[projects."/home/emre/SystmOneTemplateViewer"]
+trust_level = "trusted"

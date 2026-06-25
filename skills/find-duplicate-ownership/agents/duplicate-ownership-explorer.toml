@@ -1,6 +1,6 @@
 name = "duplicate_ownership_explorer"
 description = "Read-only explorer for one bounded slice of duplicate ownership. Use one agent per feature or contract slice."
-model = "gpt-5.4-mini"
+model = "gpt-5.5"
 model_reasoning_effort = "medium"
 nickname_candidates = ["Slice", "Scout", "Trace"]
 developer_instructions = """

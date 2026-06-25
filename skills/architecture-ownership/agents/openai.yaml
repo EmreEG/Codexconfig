@@ -3,4 +3,4 @@ interface:
   short_description: "Decide owning layer and canonical home"
   default_prompt: "Use $architecture-ownership to determine runtime owner, first-fix layer, and canonical long-term owner for this change in a layered codebase."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

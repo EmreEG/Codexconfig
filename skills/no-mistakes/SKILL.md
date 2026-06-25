@@ -1,6 +1,6 @@
 ---
 name: no-mistakes
-description: Use the no-mistakes gated push workflow in Git repositories. Use when the user wants to check no-mistakes readiness, initialize or inspect a gate, configure .no-mistakes.yaml, push through the no-mistakes remote, attach to runs, interpret/fix pipeline findings, rerun status/runs/doctor, or use no-mistakes with Codex/Claude/OpenCode/Pi/ACP agents. Install guidance is secondary and only for missing or broken no-mistakes binaries.
+description: "Run the no-mistakes gated commit, review, and push workflow when explicitly requested."
 ---
 
 # No Mistakes

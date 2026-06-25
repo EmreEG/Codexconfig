@@ -1,6 +1,6 @@
 ---
 name: krypton-execution
-description: Use when executing an approved Krypton plan, GOAL.md, or implementation plan that already defines intent, ownership, contract, cutover, task boundaries, and acceptance evidence. Use for main-agent execution with explorer, plan-reviewer, reviewer, maintainer, or verifier gates.
+description: "Execute an approved Krypton plan with bounded tasks, review gates, and evidence."
 ---
 
 # Krypton Execution

@@ -1,0 +1,4 @@
+web_search = "live"
+
+[tools.web_search]
+context_size = "high"

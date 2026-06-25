@@ -1,6 +1,6 @@
 ---
 name: architecture-ownership
-description: Determine runtime owner, first-fix layer, and canonical long-term module or package owner in layered codebases. Use when placing code across UI vs platform shell vs runtime orchestration vs domain or application vs shared core vs adapter or integration layers, debugging ownership issues, removing duplicate policy paths, or answering "where should this live?" architecture questions.
+description: "Place code in the canonical owning layer for an explicit architecture ownership decision."
 ---
 
 # Architecture Ownership

@@ -1,6 +1,6 @@
 ---
 name: find-duplicate-ownership
-description: Find duplicate ownership, hidden second sources of truth, and contract drift in layered codebases. Use when reviewing normalization, validation, defaulting, canonicalization, persistence mapping, runtime-vs-durable state, duplicated helpers, query or cache ownership, or any "who owns this rule?" architecture question. Especially useful for SSOT audits across frontend, backend, shared core, and adapter layers, and when the user explicitly asks for duplicate-ownership exploration with subagents.
+description: "Audit duplicate sources of truth and contract ownership across layers."
 ---
 
 # Find Duplicate Ownership

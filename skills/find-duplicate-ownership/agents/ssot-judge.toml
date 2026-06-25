@@ -1,6 +1,6 @@
 name = "ssot_judge"
 description = "Strict read-only judge for duplicate-ownership findings. Use after exploration to decide the winning owner and hard-cut cleanup."
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "high"
 nickname_candidates = ["Judge", "Owner", "Verdict"]
 developer_instructions = """

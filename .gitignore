@@ -1,30 +1,34 @@
-
-# Beads / Dolt files (added by bd init)
+# Beads / Dolt files
 .dolt/
-*.db
 .beads-credential-key
 .beads/proxieddb/
 
-# Codex runtime state, local to this machine
-.tmp/
-attachments/
 auth.json
-cache/
-goals_1.sqlite*
 history.jsonl
+session_index.jsonl
 installation_id
-logs_2.sqlite*
-memories_1.sqlite*
-models_cache.json
-proxy/
+version.json
 sessions/
+archived_sessions/
 shell_snapshots/
-state_5.sqlite*
+log/
+logs/
+cache/
+.tmp/
 tmp/
-/plugins/cache/
-/skills/.system/
-/version.json
-/.personality_migration
-
-# Plugin install scratch space is local, but installed plugins are config.
+backups/
+attachments/
+models_cache.json
+plugins/cache/
 plugins/.remote-plugin-install-staging/
+proxy/
+packages/
+generated_images/
+skills/.system/
+.personality_migration
+codex-cli-performance-overlay.zip
+codex-overlay-install/
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
