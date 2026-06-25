@@ -1,0 +1,36 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "detailed"
+model_verbosity = "medium"
+web_search = "live"
+
+developer_instructions = """
+Operate in maximum-quality mode. Establish the task contract and owning execution path before editing. For separable work, spawn at most three specialized depth-1 subagents for independent exploration, current research, or adversarial review; keep integration and edits in the main thread. Test competing hypotheses, inspect the real diff, run behavioral verification, and do not stop at plausible output.
+"""
+
+[tools.web_search]
+context_size = "high"
+
+
+[features]
+multi_agent = true
+goals = true
+hooks = true
+
+[agents]
+max_threads = 6
+max_depth = 1
+job_max_runtime_seconds = 1800
+[[skills.config]]
+path = "/home/emre/.codex/skills/root-cause-finder/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/git-safe-workflow/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/ast-grep/SKILL.md"
+enabled = true

@@ -1,9 +1,13 @@
+developer_instructions = """
+Use Headroom only for downstream low-value logs, repetitive tool output, or retrievable background context. Never compress diffs, ast-grep rewrite previews, failing assertions, causal traces, API responses, security evidence, or exact acceptance criteria.
+"""
+
 [mcp_servers.headroom]
 enabled = true
 required = false
 command = "headroom"
 args = ["mcp", "serve"]
-startup_timeout_sec = 8
-tool_timeout_sec = 30
+startup_timeout_sec = 30
+tool_timeout_sec = 120
 default_tools_approval_mode = "approve"
 enabled_tools = ["headroom_compress", "headroom_retrieve", "headroom_stats"]

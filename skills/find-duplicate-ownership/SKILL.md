@@ -1,6 +1,6 @@
 ---
 name: find-duplicate-ownership
-description: "Audit duplicate sources of truth and contract ownership across layers."
+description: "Audit competing sources of truth and duplicate contract ownership across layers."
 ---
 
 # Find Duplicate Ownership

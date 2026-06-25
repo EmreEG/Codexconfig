@@ -3,4 +3,4 @@ interface:
   short_description: "Enforce one canonical current-state codepath"
   default_prompt: "Use $hard-cut to enforce a hard-cut current-state product policy."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

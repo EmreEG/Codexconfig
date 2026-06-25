@@ -1,4 +1,14 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
 web_search = "live"
+
+developer_instructions = """
+For version-sensitive or external claims, search live and prefer official documentation, source repositories, release notes, standards, datasets, and original papers. Compare publication dates with event dates. Separate verified facts, disagreement, and inference.
+"""
 
 [tools.web_search]
 context_size = "high"

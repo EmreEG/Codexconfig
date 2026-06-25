@@ -1,26 +1,29 @@
 #:schema https://developers.openai.com/codex/config-schema.json
 
+# Intelligence-first default.
 model = "gpt-5.5"
+review_model = "gpt-5.5"
 model_provider = "openai"
 personality = "none"
 
-model_reasoning_effort = "medium"
-plan_mode_reasoning_effort = "high"
-model_reasoning_summary = "none"
-model_verbosity = "low"
-service_tier = "fast"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
 
-allow_login_shell = false
-check_for_update_on_startup = false
+allow_login_shell = true
+check_for_update_on_startup = true
+background_terminal_max_timeout = 300000
 
+# Preserve the user's existing unrestricted execution policy.
 sandbox_mode = "danger-full-access"
 approval_policy = { granular = { sandbox_approval = false, rules = true, mcp_elicitations = false, request_permissions = true, skill_approval = true } }
 approvals_reviewer = "user"
 
 project_doc_max_bytes = 32768
 project_doc_fallback_filenames = []
-tool_output_token_limit = 10000
-web_search = "disabled"
+tool_output_token_limit = 12000
+web_search = "live"
 
 [analytics]
 enabled = false
@@ -32,7 +35,10 @@ enabled = false
 max_bytes = 33554432
 
 [tools]
-view_image = false
+view_image = true
+
+[tools.web_search]
+context_size = "high"
 
 [features]
 apps = false
@@ -46,12 +52,12 @@ browser_use_full_cdp_access = false
 computer_use = false
 in_app_browser = false
 image_generation = false
-hooks = false
-goals = false
+hooks = true
+goals = true
 skill_mcp_dependency_install = false
 memories = false
 personality = false
-multi_agent = false
+multi_agent = true
 guardian_approval = false
 tool_call_mcp_elicitation = false
 shell_snapshot = true
@@ -63,11 +69,13 @@ enable_request_compression = true
 [agents]
 max_threads = 6
 max_depth = 1
+job_max_runtime_seconds = 1800
 
 [tui]
 animations = false
 show_tooltips = false
 
+# Keep the ordinary skill list empty. Focused profiles enable only relevant skills.
 [[skills.config]]
 path = "/home/emre/.codex/skills/.system/imagegen/SKILL.md"
 enabled = false
@@ -132,11 +140,15 @@ enabled = false
 path = "/home/emre/.codex/skills/loop-library/SKILL.md"
 enabled = false
 
-[projects."/home/emre/.codex"]
-trust_level = "trusted"
+# Preserved verbatim in meaning from the pre-install configuration.
+["projects"."/home/emre/.codex"]
+"trust_level" = "trusted"
 
-[projects."/home/emre/logiflowplus"]
-trust_level = "trusted"
+["projects"."/home/emre/logiflowplus"]
+"trust_level" = "trusted"
 
-[projects."/home/emre/SystmOneTemplateViewer"]
-trust_level = "trusted"
+["projects"."/home/emre/SystmOneTemplateViewer"]
+"trust_level" = "trusted"
+
+["projects"."/home/emre"]
+"trust_level" = "trusted"

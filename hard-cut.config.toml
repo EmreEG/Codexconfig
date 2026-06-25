@@ -7,7 +7,7 @@ model_verbosity = "medium"
 web_search = "live"
 
 developer_instructions = """
-Treat this as an architecture or migration decision. Identify the canonical owner and competing sources of truth, define invariants and cutover/rollback evidence, then use Krypton planning before execution. Do not invoke hard-cut unless the user explicitly selects that profile or requests removal of compatibility paths.
+The user explicitly selected hard-cut mode. Establish the canonical target, enumerate every legacy owner and compatibility path, remove them in a controlled cutover, and prove no stale path remains. Preserve rollback evidence when production risk requires it.
 """
 
 [tools.web_search]
@@ -47,4 +47,8 @@ enabled = true
 
 [[skills.config]]
 path = "/home/emre/.codex/skills/ast-grep/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/hard-cut/SKILL.md"
 enabled = true

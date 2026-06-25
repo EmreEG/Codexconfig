@@ -1,0 +1,23 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "detailed"
+model_verbosity = "medium"
+web_search = "live"
+
+developer_instructions = """
+Run maximum-depth research. Decompose the question into independent source questions, use up to three depth-1 researcher or reviewer agents, prioritize primary sources, triangulate load-bearing claims, and clearly distinguish evidence from inference.
+"""
+
+[tools.web_search]
+context_size = "high"
+
+
+[features]
+multi_agent = true
+goals = false
+
+[agents]
+max_threads = 4
+max_depth = 1

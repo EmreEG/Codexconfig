@@ -1,6 +1,6 @@
 ---
 name: ast-grep
-description: "Syntax-aware structural search and codemods when exact text search is insufficient."
+description: "Use syntax-aware structural search or codemods when exact text search is insufficient."
 ---
 
 # ast-grep

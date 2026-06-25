@@ -1,6 +1,6 @@
 ---
 name: krypton-execution
-description: "Execute an approved Krypton plan with bounded tasks, review gates, and evidence."
+description: "Execute an approved Krypton plan with bounded tasks, review gates, and acceptance evidence."
 ---
 
 # Krypton Execution

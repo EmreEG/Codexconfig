@@ -1,8 +1,13 @@
+developer_instructions = """
+Use Semble for semantic or cross-cutting discovery, then read decisive files directly. Use exact rg for complete literal occurrence lists and ast-grep for syntax-shaped matches.
+"""
+
 [mcp_servers.semble]
 enabled = true
 required = false
-command = "semble"
-startup_timeout_sec = 5
-tool_timeout_sec = 30
+command = "uvx"
+args = ["--from", "semble[mcp]", "semble"]
+startup_timeout_sec = 30
+tool_timeout_sec = 120
 default_tools_approval_mode = "approve"
 enabled_tools = ["search", "find_related"]

@@ -1,6 +1,6 @@
 ---
 name: loop-library
-description: "Design or audit bounded repeatable agent loops when explicitly requested."
+description: "Design or audit a bounded repeatable agent loop when explicitly requested."
 ---
 
 # Loop Library

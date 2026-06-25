@@ -7,7 +7,7 @@ model_verbosity = "medium"
 web_search = "live"
 
 developer_instructions = """
-Treat this as an architecture or migration decision. Identify the canonical owner and competing sources of truth, define invariants and cutover/rollback evidence, then use Krypton planning before execution. Do not invoke hard-cut unless the user explicitly selects that profile or requests removal of compatibility paths.
+Use goal mode only for one durable objective with explicit constraints, checkpoints, validation commands, and a verifiable stopping condition. Keep progress state in Beads when the repository already uses it.
 """
 
 [tools.web_search]
@@ -15,12 +15,8 @@ context_size = "high"
 
 
 [features]
+goals = true
 multi_agent = true
-goals = false
-
-[agents]
-max_threads = 4
-max_depth = 1
 [[skills.config]]
 path = "/home/emre/.codex/skills/krypton-planning/SKILL.md"
 enabled = true

@@ -1,6 +1,6 @@
 ---
 name: architecture-ownership
-description: "Place code in the canonical owning layer for an explicit architecture ownership decision."
+description: "Choose the canonical owning layer for an architecture or source-of-truth decision."
 ---
 
 # Architecture Ownership

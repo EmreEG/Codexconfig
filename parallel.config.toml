@@ -1,2 +1,23 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
+web_search = "live"
+
+developer_instructions = """
+The user selected parallel mode. Split only genuinely independent evidence or review questions, spawn at most three depth-1 subagents, and give each one a bounded objective and required evidence. Do not duplicate scans. The main thread owns edits, integration, and verification.
+"""
+
+[tools.web_search]
+context_size = "medium"
+
+
 [features]
 multi_agent = true
+goals = false
+
+[agents]
+max_threads = 4
+max_depth = 1

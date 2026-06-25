@@ -1,6 +1,14 @@
 model = "gpt-5.4-mini"
+review_model = "gpt-5.5"
 model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
-model_reasoning_summary = "none"
+model_reasoning_summary = "auto"
 model_verbosity = "low"
-service_tier = "fast"
+web_search = "disabled"
+
+[tools]
+view_image = false
+
+[features]
+multi_agent = false
+goals = false

@@ -1,7 +1,18 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
 web_search = "live"
+
+developer_instructions = """
+For OpenAI product or API work, use the OpenAI documentation skill and current official OpenAI sources as the source of truth.
+"""
 
 [tools.web_search]
 context_size = "high"
+
 
 [[skills.config]]
 path = "/home/emre/.codex/skills/.system/openai-docs/SKILL.md"

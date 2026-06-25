@@ -1,0 +1,5 @@
+web_search = "disabled"
+
+[features]
+multi_agent = false
+goals = false

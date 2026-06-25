@@ -11,15 +11,20 @@ The workstation this setup targets is:
 - Desktop environment: KDE Plasma
 - Terminal: Ghostty, from <https://ghostty.org/download>
 - Primary CLI agent: Codex, from <https://github.com/openai/codex>
+- Git provider CLIs: `gh` and `glab`
 
 ## Files That Matter
 
 | Path | Purpose |
 | --- | --- |
-| `config.toml` | Codex runtime configuration: model, approval behavior, features, MCP servers, enabled skills, and trusted projects. |
-| `medium.config.toml` | Optional Codex profile overlay for `gpt-5.5` medium reasoning with the same Fast service tier. |
-| `extra-high.config.toml` | Optional Codex profile overlay for `gpt-5.5` extra-high reasoning with the same Fast service tier. |
-| `loop-library.config.toml` | Optional Codex profile overlay that enables live web search for current Loop Library catalog lookup. |
+| `config.toml` | Codex runtime configuration: model, approval behavior, default features, disabled base skills, and trusted projects. |
+| `max.config.toml` | Maximum-quality profile: GPT-5.5 XHigh, detailed summaries, live research, depth-1 bounded specialists. |
+| `fast.config.toml` | Explicit Fast service-tier profile. The default config does not consume Fast tier. |
+| `semantic.config.toml` | Explicit Semble MCP profile for semantic discovery. |
+| `headroom.config.toml` | Explicit Headroom MCP profile for selective context compression/retrieval. |
+| `browser.config.toml` | Explicit browser/computer/image-generation capability profile. |
+| `authoring.config.toml` | Explicit plugin and skill authoring profile. |
+| `loop-library.config.toml` | Explicit Loop Library profile with live catalog lookup and the Loop Library skill. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
 | `.beads/` | Beads task database, embedded Dolt backend, and Beads-managed git hooks. |
 | `.beads/config.yaml` | Beads repository configuration and documentation for optional settings. |
@@ -27,7 +32,7 @@ The workstation this setup targets is:
 | `skills/` | Locally installed Codex skills and their optional agent definitions. |
 | `skills/.system/` | Codex system skills installed by Codex itself. This path is ignored by git. |
 | `plugins/` | Codex plugin install/cache area. Active plugin cache is local runtime state and ignored by git. |
-| `.tmp/plugins/` | Local plugin marketplace checkout/scratch area. Ignored by git. |
+| `tmp/` | Local scratch area. Ignored by git. |
 | `.gitignore` | Keeps auth, caches, sessions, logs, runtime databases, and plugin cache data out of git. |
 
 ## Codex Runtime
@@ -37,16 +42,18 @@ defaults are:
 
 - Model: `gpt-5.5`
 - Provider: `openai`
-- Personality: `pragmatic`
+- Personality: `none`
 - Reasoning effort: `high`
+- Plan-mode reasoning effort: `xhigh`
 - Reasoning summaries: `auto`
 - Verbosity: `medium`
-- Service tier: `fast`
-- Web search: `cached`
-- Optional Loop Library profile: `web_search = "live"` via `codex --profile loop-library`
-- Tool output token limit: `30000`
+- Service tier: standard/default; Fast is opt-in via `codex -p fast`
+- Web search: `live`
+- Tool output token limit: `12000`
 - Background terminal max timeout: `300000` ms
-- Project instruction max size: `65536` bytes
+- Project instruction max size: `32768` bytes
+- Default MCP servers: none
+- Default visible skills: none
 
 The filesystem sandbox is disabled for generated shell commands:
 
@@ -61,7 +68,7 @@ approval_policy = {
   granular = {
     sandbox_approval = false,
     rules = true,
-    mcp_elicitations = true,
+    mcp_elicitations = false,
     request_permissions = true,
     skill_approval = true
   }
@@ -69,25 +76,30 @@ approval_policy = {
 ```
 
 In practical terms, shell commands can access the filesystem directly, while
-rule-gated actions, MCP elicitations, permission requests, and skill approval
-remain explicit gates.
+rule-gated actions, permission requests, and skill approval remain explicit
+gates. MCP elicitations are rejected by default.
 
-Enabled Codex features:
+Enabled by default:
 
-- `apps = true`
 - `hooks = true`
+- `goals = true`
 - `multi_agent = true`
 - `shell_snapshot = true`
 - `shell_tool = true`
 - `unified_exec = true`
 - `fast_mode = true`
 - `enable_request_compression = true`
-- `skill_mcp_dependency_install = true`
 
-Disabled Codex features:
+Disabled by default to keep the base prompt and startup surface clean:
 
+- `apps = false`
+- `plugins = false`
+- `workspace_dependencies = false`
+- `browser_use = false`
+- `computer_use = false`
+- `image_generation = false`
+- `skill_mcp_dependency_install = false`
 - `memories = false`
-- `undo = false`
 
 Durable memory and task state are intentionally owned by Beads, not Codex
 memories.
@@ -97,33 +109,42 @@ Trusted project roots:
 - `/home/emre`
 - `/home/emre/.codex`
 - `/home/emre/logiflowplus`
+- `/home/emre/SystmOneTemplateViewer`
 
-### Search Profiles
+### Profile Matrix
 
-The base configuration keeps web search cached. Use the Loop Library profile
-for `Find`, full `Discover`, or any Loop Library work requiring the current
-published catalog:
+Use profiles to opt into extra capability, cost, or prompt surface:
 
 ```bash
-codex --profile loop-library
+codex                 # GPT-5.5 High, live search, zero default skills/MCPs
+codex -p max          # GPT-5.5 XHigh maximum-quality profile
+codex -p fast         # Fast service tier only when explicitly selected
+codex -p semantic     # Semble MCP profile
+codex -p headroom     # Headroom MCP profile
+codex -p browser      # browser/computer/image-generation capability profile
+codex -p authoring    # plugin and skill creation profile
+codex -p loop-library # Loop Library skill and live catalog lookup
 ```
 
-That profile is defined in `loop-library.config.toml` and sets:
-
-```toml
-web_search = "live"
-```
-
-The base cached-search configuration is sufficient for pure local `Audit` or
-`Design` work that does not need current catalog lookup.
+Other focused profiles include `quick`, `medium`, `deep`, `xhigh`,
+`extra-high`, `parallel`, `research`, `deep-research`, `max-research`,
+`architecture`, `hard-cut`, `goal`, `release`, `docs`, `local`, and `safe`.
 
 ## MCP Servers
 
-Two MCP servers are configured directly in `config.toml`.
+The base configuration intentionally has zero MCP servers. MCP servers are
+available only through explicit profiles so ordinary sessions avoid startup and
+prompt clutter.
 
 ### Semble
 
 Purpose: semantic code discovery.
+
+Profile:
+
+```bash
+codex -p semantic
+```
 
 Repository: <https://github.com/MinishLab/semble/tree/main>
 
@@ -138,11 +159,10 @@ Config details:
 - Server key: `mcp_servers.semble`
 - Enabled: `true`
 - Required: `false`
-- Startup timeout: `20.0` seconds
+- Startup timeout: `30.0` seconds
 - Tool timeout: `120.0` seconds
 - Enabled tools: `search`, `find_related`
-- Default tool approval mode: `auto`
-- `search` approval mode: `approve`
+- Default tool approval mode: `approve`
 
 Workflow rule: use Semble first for semantic discovery, then read the complete
 files directly before editing. Do not edit from search snippets alone.
@@ -150,6 +170,12 @@ files directly before editing. Do not edit from search snippets alone.
 ### Headroom
 
 Purpose: context compression and retrieval.
+
+Profile:
+
+```bash
+codex -p headroom
+```
 
 Repository: <https://github.com/chopratejas/headroom>
 
@@ -164,10 +190,10 @@ Config details:
 - Server key: `mcp_servers.headroom`
 - Enabled: `true`
 - Required: `false`
-- Startup timeout: `20.0` seconds
+- Startup timeout: `30.0` seconds
 - Tool timeout: `120.0` seconds
 - Enabled tools: `headroom_compress`, `headroom_retrieve`, `headroom_stats`
-- Default tool approval mode: `auto`
+- Default tool approval mode: `approve`
 
 Important caution: this workspace intentionally uses selective Headroom MCP
 mode. Do not run `headroom wrap codex` against this managed configuration
@@ -178,46 +204,35 @@ stack traces, security-sensitive details, or source-of-truth decisions.
 
 ## Apps And Plugins
 
-Codex apps are enabled with:
+Apps, plugins, browser, computer use, and image generation are disabled in the
+base profile. Use explicit capability profiles instead:
 
-```toml
-[features]
-apps = true
+```bash
+codex -p browser   # browser/computer/image-generation capability
+codex -p authoring # plugin and skill authoring/installation capability
 ```
 
-The active local plugin cache currently contains the OpenAI GitHub plugin:
+Local plugin cache, if present, is runtime state and ignored by git:
 
 ```text
 plugins/cache/openai-curated-remote/github/0.1.5/
 ```
 
-That plugin is local runtime/cache state and is ignored by git. Its manifest
-describes it as:
+An installed GitHub plugin manifest may describe itself as:
 
 ```text
 Inspect repositories, triage pull requests and issues, debug CI, and publish
 changes through a hybrid GitHub connector and CLI workflow.
 ```
 
-Plugin app connector:
-
-```json
-{
-  "github": {
-    "id": "connector_76869538009648d5b282a4bb21c3d157",
-    "required": true
-  }
-}
-```
-
-GitHub plugin skills available from the cache:
+GitHub plugin skills, when present, can include:
 
 - `github`: general GitHub repository, issue, and PR triage.
 - `gh-address-comments`: inspect and address actionable PR review feedback.
 - `gh-fix-ci`: debug failing GitHub Actions checks with `gh` logs.
 - `yeet`: publish local changes by committing, pushing, and opening a draft PR.
 
-The GitHub plugin is intentionally hybrid:
+When a GitHub plugin is active in a capability profile, use it as a hybrid:
 
 - Use the GitHub connector for structured repository, PR, issue, label, comment,
   reaction, and PR creation workflows.
@@ -226,10 +241,12 @@ The GitHub plugin is intentionally hybrid:
 
 ## Skills
 
-Skills are enabled in `config.toml` with `[[skills.config]]` entries. Workflow
-policy belongs in `AGENTS.md`; `config.toml` only wires the skills into Codex.
+The base `config.toml` lists local and system skills with `enabled = false` so
+ordinary sessions have zero visible skills. Focused profiles enable only the
+skills they need. Workflow policy belongs in `AGENTS.md`; profile files only
+wire skills into Codex.
 
-Enabled local skills:
+Available local skills:
 
 | Skill | Use |
 | --- | --- |
@@ -245,7 +262,7 @@ Enabled local skills:
 | `ast-grep` | Syntax-aware search, structural matching, and small reviewable codemods. |
 | `loop-library` | Explicit-only advisory skill for discovering, finding, auditing, adapting, and designing bounded agent loops. |
 
-System skills under `skills/.system/`:
+System skills under `skills/.system/` are enabled only by focused profiles:
 
 - `imagegen`
 - `openai-docs`
@@ -264,18 +281,20 @@ Multi-agent support is enabled:
 multi_agent = true
 
 [agents]
-max_threads = 4
+max_threads = 6
 max_depth = 1
 job_max_runtime_seconds = 1800
 ```
 
-There is one general configured reviewer agent:
+Configured custom agents live under `agents/`:
 
-```toml
-[agents.reviewer]
-description = "Review correctness, safety, test evidence, traces, UI/browser/API evidence, and source-of-truth consistency."
-nickname_candidates = ["Reviewer", "Verifier"]
-```
+- `fast_explorer`: GPT-5.4-mini read-only mapper for one narrow question.
+- `deep_explorer`: GPT-5.5 High read-only investigator for ownership,
+  dataflow, or root-cause questions.
+- `researcher`: GPT-5.5 High read-only live-web researcher for current
+  primary-source evidence.
+- `reviewer`: GPT-5.5 XHigh read-only adversarial diff reviewer.
+- `verifier`: GPT-5.5 High focused behavioral verifier.
 
 Skill-specific agent definitions live under `skills/*/agents/`.
 
@@ -386,6 +405,7 @@ user.name=EmreEG
 user.email=em.gozde@gmail.com
 init.defaultbranch=main
 remote.origin.url=https://github.com/EmreEG/Codexconfig.git
+remote.no-mistakes.url=/home/emre/.no-mistakes/repos/febfb5708a2c.git
 branch.main.remote=origin
 branch.main.merge=refs/heads/main
 ```
@@ -395,6 +415,12 @@ GitHub credentials are delegated to GitHub CLI:
 ```ini
 credential.https://github.com.helper=!/usr/bin/gh auth git-credential
 credential.https://gist.github.com.helper=!/usr/bin/gh auth git-credential
+```
+
+GitLab CLI is also installed and authenticated for GitLab-hosted repositories:
+
+```bash
+glab auth status
 ```
 
 ## Code Search And Editing Tools
@@ -482,17 +508,15 @@ routing. Selecting or designing a loop remains advisory. Existing Beads,
 Krypton, discovery, verification, approval, and git-safety rules govern any
 subsequent execution.
 
-The base config intentionally keeps `web_search = "cached"`. Published-loop
-lookup requires the current catalog, so start that session with the tracked
-profile:
+The base config uses live search. For Loop Library work, start a focused
+session with the tracked profile so the Loop Library skill is visible:
 
 ```bash
-codex --profile loop-library
+codex -p loop-library
 ```
 
-Then invoke `$loop-library` and use its Find path. Local codebase discovery,
-loop auditing, and new-loop design do not require the live-search profile unless
-they also need current catalog results.
+Then invoke `$loop-library` and use its Find, Discover, Audit, Adapt, or Design
+path as appropriate.
 
 Catalog prompts are templates, not installed capabilities or authorization.
 Replace named tools, schedules, progress files, and handoff formats with the
@@ -597,6 +621,10 @@ release-sensitive, gated push flows, or when explicitly requested.
 - Ask before remote-affecting commands unless the user explicitly requested the
   push or PR flow.
 - Prefer explicit repo commands in `.no-mistakes.yaml` when present.
+- Keep the tracked `skills/no-mistakes/` copy as the Codex skill source. If
+  `no-mistakes init` installs `/home/emre/.agents/skills/no-mistakes`, remove
+  that duplicate so it does not leak into profiles where `no-mistakes` is not
+  explicitly enabled.
 
 ## Instruction Management
 
@@ -620,34 +648,38 @@ plugin caches, and system-managed skills out of version control.
 Beads/Dolt ignored paths:
 
 - `.dolt/`
+- `.beads/backup/`
+- `.beads/embeddeddolt/`
 - `*.db`
-- `.beads-credential-key`
-- `.beads/proxieddb/`
 
 Codex runtime ignored paths:
 
-- `.tmp/`
 - `attachments/`
 - `auth.json`
 - `cache/`
+- `codex-cli-*-overlay.zip`
+- `codex-cli-*-overlay.sha256`
+- `codex-intelligence-install/`
 - `goals_1.sqlite*`
 - `history.jsonl`
 - `installation_id`
 - `logs_2.sqlite*`
 - `memories_1.sqlite*`
 - `models_cache.json`
+- `packages/`
 - `proxy/`
 - `sessions/`
 - `shell_snapshots/`
 - `state_5.sqlite*`
 - `tmp/`
 - `version.json`
+- `.last-intelligence-backup`
 - `.personality_migration`
+- `CODEX_INTELLIGENCE_MAX_AUDIT.md`
 
 Plugin and system-skill ignored paths:
 
-- `plugins/cache/`
-- `plugins/.remote-plugin-install-staging/`
+- `plugins/`
 - `skills/.system/`
 
 This keeps local credentials, runtime cache, model metadata, shell state,
@@ -658,11 +690,15 @@ control.
 
 When changing this workspace:
 
-1. Run `bd prime`.
-2. If `.beads/` exists, create or claim a Beads issue before editing.
+1. Run `timeout --foreground 8s bd prime --memories-only` once when `.beads/`
+   exists.
+2. Use Beads for durable task state when the work needs it; do not initialize or
+   retry Beads without approval.
 3. Read `config.toml` and `AGENTS.md` before changing behavior.
-4. Keep workflow policy in `AGENTS.md`, not duplicated in `config.toml`.
-5. Keep MCP server wiring in `config.toml`.
+4. Keep workflow policy in `AGENTS.md`, not duplicated in profile files.
+5. Keep MCP server wiring in explicit profiles unless a default MCP is
+   intentionally added.
 6. Keep generated runtime/cache state ignored.
 7. Inspect `git status --short --branch` before finishing.
-8. Close the Beads issue only after verification evidence exists.
+8. Run the narrowest check that proves changed behavior, then broaden according
+   to blast radius.

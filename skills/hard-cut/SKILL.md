@@ -1,6 +1,6 @@
 ---
 name: hard-cut
-description: "Remove compatibility paths and keep one canonical pre-release implementation."
+description: "Remove compatibility paths and retain one canonical implementation when hard-cut mode is explicit."
 ---
 
 # Hard-Cut Policy
