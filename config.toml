@@ -6,7 +6,7 @@ review_model = "gpt-5.5"
 model_provider = "openai"
 personality = "none"
 
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "xhigh"
 model_reasoning_summary = "auto"
 model_verbosity = "medium"
@@ -55,7 +55,6 @@ image_generation = false
 hooks = true
 goals = true
 skill_mcp_dependency_install = false
-memories = false
 personality = false
 multi_agent = true
 guardian_approval = false
@@ -65,6 +64,7 @@ shell_tool = true
 unified_exec = true
 fast_mode = true
 enable_request_compression = true
+prevent_idle_sleep = true
 
 [agents]
 max_threads = 6

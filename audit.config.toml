@@ -1,0 +1,43 @@
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
+model_reasoning_summary = "detailed"
+model_verbosity = "medium"
+web_search = "live"
+
+developer_instructions = """
+Run a bounded Codex workspace audit before editing. Compare effective config, profiles, skills, standalone custom agents, MCP wiring, sandbox posture, permission posture, ignored runtime state, and documentation claims against current primary-source Codex documentation and tracked files. Identify schema drift, stale profile claims, hidden prompt-surface growth, unsafe defaults, profile/tool regressions, and missing verification gates. Apply only grounded, minimal changes and prove them with TOML parsing, workspace validation, and final diff review.
+"""
+
+[tools.web_search]
+context_size = "high"
+
+[features]
+multi_agent = true
+goals = false
+
+[agents]
+max_threads = 4
+max_depth = 1
+job_max_runtime_seconds = 1800
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/root-cause-finder/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/git-safe-workflow/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/no-mistakes/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/stage-review/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/ast-grep/SKILL.md"
+enabled = true

@@ -19,10 +19,12 @@ The workstation this setup targets is:
 | --- | --- |
 | `config.toml` | Codex runtime configuration: model, approval behavior, default features, disabled base skills, and trusted projects. |
 | `max.config.toml` | Maximum-quality profile: GPT-5.5 XHigh, detailed summaries, live research, depth-1 bounded specialists. |
+| `audit.config.toml` | Maximum-depth self-audit profile for schema, safety, skills, custom agents, MCP wiring, documentation claims, and validation gates. |
 | `fast.config.toml` | Explicit Fast service-tier profile. The default config does not consume Fast tier. |
 | `semantic.config.toml` | Explicit Semble MCP profile for semantic discovery. |
 | `headroom.config.toml` | Explicit Headroom MCP profile for selective context compression/retrieval. |
 | `browser.config.toml` | Explicit browser/computer/image-generation capability profile. |
+| `safe-offline.config.toml` | Local-only workspace-write profile with outbound network blocked. Existing `safe.config.toml` remains network-enabled for compatibility. |
 | `authoring.config.toml` | Explicit plugin and skill authoring profile. |
 | `loop-library.config.toml` | Explicit Loop Library profile with live catalog lookup and the Loop Library skill. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
@@ -33,7 +35,8 @@ The workstation this setup targets is:
 | `skills/.system/` | Codex system skills installed by Codex itself. This path is ignored by git. |
 | `plugins/` | Codex plugin install/cache area. Active plugin cache is local runtime state and ignored by git. |
 | `tmp/` | Local scratch area. Ignored by git. |
-| `.gitignore` | Keeps auth, caches, sessions, logs, runtime databases, and plugin cache data out of git. |
+| `.gitignore` | Keeps auth, caches, sessions, logs, runtime databases, plugin cache data, and local secret material out of git. |
+| `tools/validate-codex-workspace.py` | Stdlib-only validation gate for TOML syntax, skill selector shape, standalone custom-agent schema, profile network posture, skill frontmatter, ignored local state, and obvious committed secrets. |
 
 ## Codex Runtime
 
@@ -43,7 +46,7 @@ defaults are:
 - Model: `gpt-5.5`
 - Provider: `openai`
 - Personality: `none`
-- Reasoning effort: `high`
+- Reasoning effort: `xhigh`
 - Plan-mode reasoning effort: `xhigh`
 - Reasoning summaries: `auto`
 - Verbosity: `medium`
@@ -89,6 +92,7 @@ Enabled by default:
 - `unified_exec = true`
 - `fast_mode = true`
 - `enable_request_compression = true`
+- `prevent_idle_sleep = true`
 
 Disabled by default to keep the base prompt and startup surface clean:
 
@@ -99,10 +103,8 @@ Disabled by default to keep the base prompt and startup surface clean:
 - `computer_use = false`
 - `image_generation = false`
 - `skill_mcp_dependency_install = false`
-- `memories = false`
 
-Durable memory and task state are intentionally owned by Beads, not Codex
-memories.
+Durable task state is managed by Beads.
 
 Trusted project roots:
 
@@ -118,17 +120,39 @@ Use profiles to opt into extra capability, cost, or prompt surface:
 ```bash
 codex                 # GPT-5.5 High, live search, zero default skills/MCPs
 codex -p max          # GPT-5.5 XHigh maximum-quality profile
+codex -p audit        # schema/safety/skill/agent/MCP workspace audit profile
 codex -p fast         # Fast service tier only when explicitly selected
 codex -p semantic     # Semble MCP profile
 codex -p headroom     # Headroom MCP profile
 codex -p browser      # browser/computer/image-generation capability profile
 codex -p authoring    # plugin and skill creation profile
 codex -p loop-library # Loop Library skill and live catalog lookup
+codex -p safe-offline # local-only workspace-write checks with network blocked
 ```
 
 Other focused profiles include `quick`, `medium`, `deep`, `xhigh`,
 `extra-high`, `parallel`, `research`, `deep-research`, `max-research`,
-`architecture`, `hard-cut`, `goal`, `release`, `docs`, `local`, and `safe`.
+`architecture`, `hard-cut`, `goal`, `release`, `docs`, `local`, `safe`, and `safe-offline`.
+
+## Validation Gate
+
+Run the workspace validator after changing Codex config, profile files, custom agents, skill wiring, MCP wiring, sandbox/approval posture, or ignore rules:
+
+```bash
+python tools/validate-codex-workspace.py
+```
+
+The validator is intentionally stdlib-only. It checks TOML parsing, `skills.config` selector shape, standalone custom-agent required keys, offline profile network posture, skill frontmatter, ignore coverage for local runtime/secret material, and obvious committed secret patterns.
+
+This workspace keeps skill selectors pointed at the concrete `SKILL.md` files, for example:
+
+```toml
+[[skills.config]]
+path = "/home/emre/.codex/skills/root-cause-finder/SKILL.md"
+enabled = true
+```
+
+Do not bulk-migrate those selectors to directory paths unless current Codex documentation and a local runtime smoke test both prove that migration is required.
 
 ## MCP Servers
 
@@ -246,6 +270,10 @@ ordinary sessions have zero visible skills. Focused profiles enable only the
 skills they need. Workflow policy belongs in `AGENTS.md`; profile files only
 wire skills into Codex.
 
+Skill config entries in this workspace use absolute `SKILL.md` file selectors.
+Keep that shape unless a local runtime check proves the installed Codex build
+requires a different selector form.
+
 Available local skills:
 
 | Skill | Use |
@@ -286,7 +314,11 @@ max_depth = 1
 job_max_runtime_seconds = 1800
 ```
 
-Configured custom agents live under `agents/`:
+Configured custom agents live under standalone TOML files in `agents/`. Each file
+must keep its own `name`, `description`, and `developer_instructions`; the `name`
+field is the runtime identity used when spawning or referring to the custom agent.
+
+Configured custom agent identities:
 
 - `fast_explorer`: GPT-5.4-mini read-only mapper for one narrow question.
 - `deep_explorer`: GPT-5.5 High read-only investigator for ownership,

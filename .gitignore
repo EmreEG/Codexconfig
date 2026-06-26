@@ -20,6 +20,7 @@ skills/.system/
 *.db-shm
 *.db-wal
 *.sqlite
+*.sqlite*
 *.sqlite-shm
 *.sqlite-wal
 *.sqlite3
@@ -31,3 +32,26 @@ codex-overlay-install/
 codex-performance-install/
 codex-cli-*-overlay.zip
 codex-cli-*-overlay.sha256
+# Environment and secret material
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+credentials.json
+token.json
+secrets/
+
+# Local transient files
+*.bak
+*.tmp
+*.swp
+*.orig
+__pycache__/
+*.py[cod]
