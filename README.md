@@ -28,9 +28,7 @@ The workstation this setup targets is:
 | `authoring.config.toml` | Explicit plugin and skill authoring profile. |
 | `loop-library.config.toml` | Explicit Loop Library profile with live catalog lookup and the Loop Library skill. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
-| `.beads/` | Beads task database, embedded Dolt backend, and Beads-managed git hooks. |
-| `.beads/config.yaml` | Beads repository configuration and documentation for optional settings. |
-| `.beads/hooks/` | Active git hook scripts because this repo sets `core.hooksPath` to this directory. |
+| `.beads/` | Local-only Beads task database, embedded Dolt backend, and Beads-managed git hooks. This path is ignored by git. |
 | `skills/` | Locally installed Codex skills and their optional agent definitions. |
 | `skills/.system/` | Codex system skills installed by Codex itself. This path is ignored by git. |
 | `plugins/` | Codex plugin install/cache area. Active plugin cache is local runtime state and ignored by git. |
@@ -360,7 +358,8 @@ Beads manages durable task state and long-running work context.
 
 Repository: <https://github.com/gastownhall/beads>
 
-This repo has Beads configured in embedded Dolt mode:
+This checkout has Beads configured in embedded Dolt mode. `.beads/` is local
+runtime state and is ignored by git.
 
 ```text
 beads dir: /home/emre/.codex/.beads
@@ -680,8 +679,7 @@ plugin caches, and system-managed skills out of version control.
 Beads/Dolt ignored paths:
 
 - `.dolt/`
-- `.beads/backup/`
-- `.beads/embeddeddolt/`
+- `.beads/`
 - `*.db`
 
 Codex runtime ignored paths:

@@ -6,6 +6,7 @@ version.json
 .personality_migration
 .last-intelligence-backup
 CODEX_INTELLIGENCE_MAX_AUDIT.md
+.beads/
 attachments/
 sessions/
 log/

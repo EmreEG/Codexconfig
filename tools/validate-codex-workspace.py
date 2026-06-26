@@ -28,6 +28,7 @@ AGENT_LIMIT_KEYS = {"max_threads", "max_depth", "job_max_runtime_seconds"}
 REQUIRED_GITIGNORE = {
     "auth.json",
     "history.jsonl",
+    ".beads/",
     "sessions/",
     "log/",
     "cache/",
