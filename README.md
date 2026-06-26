@@ -1,9 +1,11 @@
 # Agentic Development Setup
 
-This repository is the git-tracked Codex workspace at `/home/emre/.codex`.
-It is meant to be the single source of truth for the local Codex agent
-configuration, global agent workflow policy, installed workflow skills, Beads
-task state, git hooks, and the active MCP/plugin wiring.
+This repository tracks the Codex workspace configuration at `/home/emre/.codex`.
+It is meant to be the single source of truth for local Codex agent
+configuration, global agent workflow policy, installed workflow skills, and
+MCP/plugin wiring. Beads task state and Beads-managed git hooks live in the
+local-only `.beads/` directory and are documented here, but they are ignored by
+git.
 
 The workstation this setup targets is:
 
@@ -116,7 +118,7 @@ Trusted project roots:
 Use profiles to opt into extra capability, cost, or prompt surface:
 
 ```bash
-codex                 # GPT-5.5 High, live search, zero default skills/MCPs
+codex                 # GPT-5.5 XHigh, live search, zero default skills/MCPs
 codex -p max          # GPT-5.5 XHigh maximum-quality profile
 codex -p audit        # schema/safety/skill/agent/MCP workspace audit profile
 codex -p fast         # Fast service tier only when explicitly selected
