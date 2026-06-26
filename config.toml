@@ -3,7 +3,6 @@
 # Intelligence-first default.
 model = "gpt-5.5"
 review_model = "gpt-5.5"
-model_provider = "openai"
 personality = "none"
 
 model_reasoning_effort = "xhigh"
@@ -152,3 +151,6 @@ enabled = false
 
 ["projects"."/home/emre"]
 "trust_level" = "trusted"
+
+["projects"."/home/emre/.no-mistakes/repos"]
+trust_level = "trusted"
