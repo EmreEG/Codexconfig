@@ -689,9 +689,6 @@ Codex runtime ignored paths:
 - `attachments/`
 - `auth.json`
 - `cache/`
-- `codex-cli-*-overlay.zip`
-- `codex-cli-*-overlay.sha256`
-- `codex-intelligence-install/`
 - `goals_1.sqlite*`
 - `history.jsonl`
 - `installation_id`
@@ -699,15 +696,11 @@ Codex runtime ignored paths:
 - `memories_1.sqlite*`
 - `models_cache.json`
 - `packages/`
-- `proxy/`
 - `sessions/`
 - `shell_snapshots/`
 - `state_5.sqlite*`
 - `tmp/`
 - `version.json`
-- `.last-intelligence-backup`
-- `.personality_migration`
-- `CODEX_INTELLIGENCE_MAX_AUDIT.md`
 
 Plugin and system-skill ignored paths:
 

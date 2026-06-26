@@ -3,9 +3,6 @@ history.jsonl
 installation_id
 models_cache.json
 version.json
-.personality_migration
-.last-intelligence-backup
-CODEX_INTELLIGENCE_MAX_AUDIT.md
 .beads/
 attachments/
 sessions/
@@ -13,7 +10,6 @@ log/
 cache/
 shell_snapshots/
 tmp/
-proxy/
 plugins/
 packages/
 skills/.system/
@@ -27,12 +23,6 @@ skills/.system/
 *.sqlite3
 *.sqlite3-shm
 *.sqlite3-wal
-backups/
-codex-intelligence-install/
-codex-overlay-install/
-codex-performance-install/
-codex-cli-*-overlay.zip
-codex-cli-*-overlay.sha256
 # Environment and secret material
 .env
 .env.*
