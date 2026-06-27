@@ -8,6 +8,7 @@ secret material.
 """
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 import sys
@@ -17,6 +18,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config.toml"
+CODEX_HOOKS = ROOT / ".codex" / "hooks.json"
 AGENTS_DIR = ROOT / "agents"
 SKILLS_DIR = ROOT / "skills"
 SYSTEM_SKILL_SEGMENT = "/skills/.system/"
@@ -24,6 +26,12 @@ USER_SKILL_SEGMENT = "/.codex/skills/"
 
 REQUIRED_AGENT_KEYS = {"name", "description", "developer_instructions"}
 AGENT_LIMIT_KEYS = {"max_threads", "max_depth", "job_max_runtime_seconds"}
+
+BEADS_CODEX_HOOK_COMMANDS = {
+    "SessionStart": "bd codex-hook SessionStart",
+    "PreCompact": "bd codex-hook PreCompact",
+    "PostCompact": "bd codex-hook PostCompact",
+}
 
 REQUIRED_GITIGNORE = {
     "auth.json",
@@ -258,6 +266,62 @@ def check_profiles(parsed: dict[Path, dict[str, Any]], errors: list[str], warnin
                 errors.append(f"{rel(path)}: shell_environment_policy.{key} must be a list of glob strings")
 
 
+def check_codex_hooks(errors: list[str], warnings: list[str]) -> None:
+    if not CODEX_HOOKS.exists():
+        errors.append(".codex/hooks.json: missing Beads Codex hook config")
+        return
+    try:
+        data = json.loads(CODEX_HOOKS.read_text())
+    except json.JSONDecodeError as exc:
+        errors.append(f".codex/hooks.json: JSON parse error: {exc}")
+        return
+    except OSError as exc:
+        errors.append(f".codex/hooks.json: read error: {exc}")
+        return
+    hooks = data.get("hooks") if isinstance(data, dict) else None
+    if not isinstance(hooks, dict):
+        errors.append(".codex/hooks.json: hooks must be an object")
+        return
+    for event, expected_command in BEADS_CODEX_HOOK_COMMANDS.items():
+        groups = hooks.get(event)
+        if not isinstance(groups, list) or not groups:
+            errors.append(f".codex/hooks.json: hooks.{event} must be a non-empty array")
+            continue
+        for group_index, group in enumerate(groups):
+            if not isinstance(group, dict):
+                errors.append(f".codex/hooks.json: hooks.{event}[{group_index}] must be an object")
+                continue
+            matcher = group.get("matcher")
+            if matcher is not None and not isinstance(matcher, str):
+                errors.append(f".codex/hooks.json: hooks.{event}[{group_index}].matcher must be a string")
+            entries = group.get("hooks")
+            if not isinstance(entries, list) or not entries:
+                errors.append(f".codex/hooks.json: hooks.{event}[{group_index}].hooks must be a non-empty array")
+                continue
+            for hook_index, hook in enumerate(entries):
+                if not isinstance(hook, dict):
+                    errors.append(
+                        f".codex/hooks.json: hooks.{event}[{group_index}].hooks[{hook_index}] must be an object"
+                    )
+                    continue
+                if hook.get("type") != "command":
+                    errors.append(
+                        f".codex/hooks.json: hooks.{event}[{group_index}].hooks[{hook_index}].type must be 'command'"
+                    )
+                if hook.get("command") != expected_command:
+                    errors.append(
+                        f".codex/hooks.json: hooks.{event}[{group_index}].hooks[{hook_index}].command must be {expected_command!r}"
+                    )
+                status_message = hook.get("statusMessage")
+                if status_message is not None and not isinstance(status_message, str):
+                    errors.append(
+                        f".codex/hooks.json: hooks.{event}[{group_index}].hooks[{hook_index}].statusMessage must be a string"
+                    )
+    for event in hooks:
+        if event not in BEADS_CODEX_HOOK_COMMANDS:
+            warnings.append(f".codex/hooks.json: unvalidated hook event {event!r}")
+
+
 def check_gitignore(errors: list[str]) -> None:
     path = ROOT / ".gitignore"
     if not path.exists():
@@ -302,6 +366,7 @@ def main() -> int:
     check_skill_frontmatter(errors)
     check_agents(parsed, errors, warnings)
     check_profiles(parsed, errors, warnings)
+    check_codex_hooks(errors, warnings)
     check_gitignore(errors)
     check_obvious_secrets(errors)
     for warning in warnings:

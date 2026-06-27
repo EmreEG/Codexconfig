@@ -30,6 +30,7 @@ The workstation this setup targets is:
 | `authoring.config.toml` | Explicit plugin and skill authoring profile. |
 | `loop-library.config.toml` | Explicit Loop Library profile with live catalog lookup and the Loop Library skill. |
 | `AGENTS.md` | Global workflow policy for Codex. Repository-level `AGENTS.md` files may add local rules, but this file is the consolidated default. |
+| `.codex/hooks.json` | Project-local Codex native hook config that asks Beads to inject/refresh workflow context at session and compaction boundaries. |
 | `.beads/` | Local-only Beads task database, embedded Dolt backend, and Beads-managed git hooks. This path is ignored by git. |
 | `skills/` | Locally installed Codex skills and their optional agent definitions. |
 | `skills/.system/` | Codex system skills installed by Codex itself. This path is ignored by git. |
@@ -127,11 +128,12 @@ codex -p headroom     # Headroom MCP profile
 codex -p browser      # browser/computer/image-generation capability profile
 codex -p authoring    # plugin and skill creation profile
 codex -p loop-library # Loop Library skill and live catalog lookup
+codex -p parallel     # bounded multi-agent profile with Beads coordination skill
 codex -p safe-offline # local-only workspace-write checks with network blocked
 ```
 
 Other focused profiles include `quick`, `medium`, `deep`, `xhigh`,
-`extra-high`, `parallel`, `research`, `deep-research`, `max-research`,
+`extra-high`, `research`, `deep-research`, `max-research`,
 `architecture`, `hard-cut`, `goal`, `release`, `docs`, `local`, `safe`, and `safe-offline`.
 
 ## Validation Gate
@@ -142,7 +144,7 @@ Run the workspace validator after changing Codex config, profile files, custom a
 python tools/validate-codex-workspace.py
 ```
 
-The validator is intentionally stdlib-only. It checks TOML parsing, `skills.config` selector shape, standalone custom-agent required keys, offline profile network posture, skill frontmatter, ignore coverage for local runtime/secret material, and obvious committed secret patterns.
+The validator is intentionally stdlib-only. It checks TOML parsing, `skills.config` selector shape, Codex native hook JSON shape, standalone custom-agent required keys, offline profile network posture, skill frontmatter, ignore coverage for local runtime/secret material, and obvious committed secret patterns.
 
 This workspace keeps skill selectors pointed at the concrete `SKILL.md` files, for example:
 
@@ -288,6 +290,7 @@ Available local skills:
 | `no-mistakes` | Run the heavier gated push workflow for finished feature branches. |
 | `stage-review` | Explicit-only finished-feature staging, commit, review, and no-mistakes gate workflow. |
 | `ast-grep` | Syntax-aware search, structural matching, and small reviewable codemods. |
+| `beads` | Explicit Beads workflow skill for multi-agent task coordination and durable project state. |
 | `loop-library` | Explicit-only advisory skill for discovering, finding, auditing, adapting, and designing bounded agent loops. |
 
 System skills under `skills/.system/` are enabled only by focused profiles:
@@ -338,6 +341,7 @@ Interface-only OpenAI skill entries:
 - `skills/find-duplicate-ownership/agents/openai.yaml`
 - `skills/hard-cut/agents/openai.yaml`
 - `skills/ast-grep/agents/openai.yaml`
+- `skills/beads/agents/openai.yaml`
 - `skills/no-mistakes/agents/openai.yaml`
 - `skills/stage-review/agents/openai.yaml`
 - `skills/loop-library/agents/openai.yaml`
@@ -370,8 +374,21 @@ database: /home/emre/.codex/.beads/embeddeddolt
 backend: dolt
 mode: embedded
 role: maintainer
-bd version: 1.0.5
+bd version: 1.1.0-rc.1
 ```
+
+Embedded mode is intentionally preserved here. It is the lowest-risk fit for
+this local Codex configuration repository and does not require a separate Dolt
+SQL server. It is also a single-writer posture: multiple Codex agents may work
+in separate git worktrees, but concurrent Beads writes should be serialized
+through short `bd update --claim`, `bd create`, `bd dep add`, and `bd close`
+operations.
+
+For true simultaneous Beads writers, first plan a dedicated migration to server
+mode or shared-server/proxied-server mode. Do not run `bd init --server`,
+reinitialize `.beads/`, or replace the embedded database as a drive-by setup
+step. Verify the target Dolt server, backup/export state, migration path,
+remote/sync policy, and rollback evidence before switching storage modes.
 
 Because `.beads/` exists, the workflow is:
 
@@ -387,6 +404,12 @@ bd close <id>
 Use `bd dep add <child> <parent>` when discovered work depends on another task.
 Use `bd remember "fact"` for durable project facts. Do not create `TODO.md`,
 `MEMORY.md`, or ad hoc markdown task trackers unless explicitly requested.
+For work selected from Beads, prefer `bd ready --json`, `bd show <id> --json`,
+then `bd update <id> --claim` before editing.
+
+`.beads/issues.jsonl` is not the routine sync channel. If a Beads remote is
+configured in the future, use `bd dolt pull` and `bd dolt push` only as
+policy-controlled handoff actions.
 
 For embedded Beads health checks, prefer read-only commands:
 
@@ -400,6 +423,25 @@ bd --readonly ready
 ```
 
 Do not use `bd doctor` for routine embedded-mode health checks.
+
+## Codex Native Hooks
+
+Beads' Codex recipe was adapted into this workspace instead of run verbatim.
+The generated `.agents/skills/beads/` path is not used because Codex
+auto-discovers `.agents` skills and would make Beads visible in ordinary
+sessions, breaking the zero-default-skill design. The canonical Beads skill
+copy lives at `skills/beads/SKILL.md` and is enabled by the explicit
+`parallel` profile.
+
+`.codex/hooks.json` contains Beads native hook commands:
+
+- `bd codex-hook SessionStart`
+- `bd codex-hook PreCompact`
+- `bd codex-hook PostCompact`
+
+The base `config.toml` already has `features.hooks = true`, so no nested
+project `.codex/config.toml` is needed. If Codex is already running, restart it
+after changing hook files so the TUI reloads the hook config.
 
 ## Git Hooks
 
@@ -577,7 +619,7 @@ instructa/agent-skills --skill root-cause-finder --agent codex
 instructa/agent-skills --skill git-safe-workflow --agent codex
 ```
 
-This workspace also has `ast-grep`, `no-mistakes`, `stage-review`,
+This workspace also has `ast-grep`, `beads`, `no-mistakes`, `stage-review`,
 `loop-library`, `krypton-planning`, and `krypton-execution` skills installed
 locally.
 
@@ -666,6 +708,14 @@ release-sensitive, gated push flows, or when explicitly requested.
 Do not let Beads, Semble, Headroom, Krypton, setup scripts, or plugins create
 competing persistent instruction files. If a tool proposes instruction changes,
 merge them into `AGENTS.md` manually and remove duplicates.
+
+Do not run `bd setup codex` blindly in this workspace. Its generated content is
+adapted here as `skills/beads/SKILL.md` and `.codex/hooks.json`; re-running it
+would try to create `.agents/skills/beads/` and duplicate AGENTS guidance.
+For the same reason, `bd setup codex --check` is not the acceptance gate for
+this curated layout; it expects Beads' generic `.agents` skill path. Use the
+workspace validator, `codex -p parallel debug prompt-input`, and the Beads hook
+checks documented above instead.
 
 Do not maintain these files unless explicitly requested:
 

@@ -21,3 +21,7 @@ goals = false
 [agents]
 max_threads = 4
 max_depth = 1
+
+[[skills.config]]
+path = "/home/emre/.codex/skills/beads/SKILL.md"
+enabled = true

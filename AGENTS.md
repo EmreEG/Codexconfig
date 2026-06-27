@@ -23,6 +23,9 @@ Repository-local `AGENTS.md` files supply repository commands and conventions. T
 
 - Ordinary work starts with direct inspection and implementation. Use Plan mode for ambiguous multi-file work.
 - When `.beads/` exists, run `timeout --foreground 8s bd prime --memories-only` once, then use Beads for durable task state. Do not retry a timeout or initialize Beads without approval.
+- For durable or multi-agent work in a Beads workspace, inspect `bd ready --json`, read the selected issue with `bd show <id> --json`, and claim it with `bd update <id> --claim` before editing when a matching ready issue exists.
+- Use `bd create`, `bd dep add`, `bd update --notes`, `bd close`, and `bd remember` for shared project state. Do not use `.beads/issues.jsonl` as a routine sync path; Dolt push/pull is policy-controlled handoff work.
+- Treat Beads embedded mode as single-writer local coordination. Do not run `bd init --server`, reinitialize `.beads/`, or switch storage modes unless the user explicitly asks for that migration and current Beads/Dolt evidence proves a safe path.
 - Use Krypton only for architecture, migrations, risky cutovers, source-of-truth changes, large refactors, or multi-session execution.
 - Do not create ad hoc `TODO.md`, `MEMORY.md`, `PLAN.md`, or scratch trackers unless requested.
 - Keep exact diffs, ast-grep previews, failing assertions, traces, API responses, and security evidence uncompressed. Headroom may compress downstream low-value logs, never decisive evidence.
